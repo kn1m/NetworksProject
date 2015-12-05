@@ -29,9 +29,9 @@ namespace NetworksProject
     {
 
         private DataEdge Test;
+        private DataVertex _selected;
         private NetworkGXLogicCore logicCore;
         private NetworkGraph dataGraph;
-        private int clTest = 0;
 
         public MainWindow()
         {
@@ -45,13 +45,18 @@ namespace NetworksProject
             
             //Lets setup GraphArea settings
             GraphAreaExample_Setup();
-            zoomctrl.MouseDoubleClick += ((h, j) => {
 
-                InputBox.Visibility = Visibility.Visible;
-                logicCore.Graph.AddVertex(new DataVertex(txtNewVertex.Text));
-                gg_but_randomgraph_Click(null, null);
-            });
+            //Adding new vertex
+            zoomctrl.MouseDoubleClick += ((o, s) => { VertexInputBox.Visibility = Visibility.Visible; });
+
+            //Adding new edge
+            Area.VertexSelected += ((h, j) => {
+                _selected = (DataVertex)j.VertexControl.Vertex;
+                EdgeInputBox.Visibility = Visibility.Visible; });
+
+            //Vertex tooltip
             Area.VertexMouseEnter += ((h,j) => { j.VertexControl.ToolTip = j.VertexControl.Vertex.ToString(); } );
+
             gg_but_randomgraph.Click += gg_but_randomgraph_Click;
             gg_but_relayout.Click += gg_but_relayout_Click;
             
@@ -270,6 +275,44 @@ namespace NetworksProject
                 //logicCore.Graph.AddEdge(new DataEdge(logicCore.Graph.Vertices.ElementAt(8), logicCore.Graph.Vertices.ElementAt(9)) { Text = "150", Weight = 150 });
                 gg_but_randomgraph_Click(null, null);
             }
+        }
+
+        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            VertexInputBox.Visibility = Visibility.Collapsed;
+
+            if(!string.IsNullOrWhiteSpace(VertexTextBox.Text))
+            {
+                logicCore.Graph.AddVertex(new DataVertex(VertexTextBox.Text));
+                //logicCore.Graph.AddEdge(new DataEdge(logicCore.Graph.Vertices.ElementAt(8), logicCore.Graph.Vertices.ElementAt(9)) { Text = "150", Weight = 150 });
+                gg_but_randomgraph_Click(null, null);
+            }
+
+            VertexTextBox.Text = null;
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            VertexInputBox.Visibility = Visibility.Collapsed;
+            VertexTextBox.Text = null;
+        }
+
+        private void btnSubmitEdge_Click(object sender, RoutedEventArgs e)
+        {
+            EdgeInputBox.Visibility = Visibility.Collapsed;
+
+            if (!string.IsNullOrWhiteSpace(EdgeTextBox.Text) && !string.IsNullOrWhiteSpace(NVertexTextBox.Text)) {
+                logicCore.Graph.AddEdge(new DataEdge(_selected, logicCore.Graph.Vertices.Where(x => x.Text == NVertexTextBox.Text).First()) { Text = EdgeTextBox.Text, Weight = Int32.Parse(EdgeTextBox.Text) });
+                gg_but_randomgraph_Click(null, null);
+            }
+
+            EdgeTextBox.Text = null;
+        }
+
+        private void btnCancelEdge_Click(object sender, RoutedEventArgs e)
+        {
+            EdgeInputBox.Visibility = Visibility.Collapsed;
+            EdgeTextBox.Text = null;
         }
     }
 }

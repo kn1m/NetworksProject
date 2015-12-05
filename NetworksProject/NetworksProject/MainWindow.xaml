@@ -4,19 +4,17 @@
         xmlns:local="clr-namespace:NetworksProject"
         xmlns:controls="http://schemas.panthernet.ru/graphx/"
         Title="Network's graph" Height="600" Width="825">
-    
-    
-<Grid>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/>
-    </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
-    <controls:ZoomControl x:Name="zoomctrl" Grid.Row="1">
-        <local:NetworkGraphArea x:Name="Area"/>
-    </controls:ZoomControl>
+        <controls:ZoomControl x:Name="zoomctrl" Grid.Row="1">
+            <local:NetworkGraphArea x:Name="Area"/>
+        </controls:ZoomControl>
 
-        <Grid x:Name="InputBox" Visibility="Collapsed">
+        <Grid x:Name="VertexInputBox" Visibility="Collapsed">
             <Grid Background="Black" Opacity="0.5"/>
             <Border
             MinWidth="250"
@@ -26,18 +24,37 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
                 <StackPanel>
-                    <TextBlock Margin="5" Text="Input Box:"/>
-                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <TextBlock Margin="5" Text="Enter new node name:"/>
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="VertexTextBox"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="btnSubmit" Margin="5" Content="Submit" Background="{x:Null}"
-                                />
-                        <Button x:Name="btnCancel" Margin="5" Content="Cancel" Background="{x:Null}"
-                                />
+                        <Button x:Name="btnSubmit" Margin="5" Content="Submit" Click="btnSubmit_Click"/>
+                        <Button x:Name="btnCancel" Margin="5" Content="Cancel" Click="btnCancel_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
 
+        <Grid x:Name="EdgeInputBox" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            MinWidth="250"
+            Background="White" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Enter second vertex name and nee edge weigth:"/>
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" Margin="0,0,0,4" VerticalAlignment="Center" x:Name="NVertexTextBox"/>
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="EdgeTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="btnSubmitEdge" Margin="5" Content="Submit" Click="btnSubmitEdge_Click"/>
+                        <Button x:Name="btnCancelEdge" Margin="5" Content="Cancel" Click="btnCancelEdge_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -51,26 +68,25 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-
-            <DockPanel LastChildFill="False" Grid.Column="1" Margin="3" Grid.Row="0">
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">
-            <Button Height="50" Margin="3" Name="gg_but_randomgraph"  DockPanel.Dock="Top" UseLayoutRounding="True">
-                <Image Source="/Images/dice.png"/>
-            </Button>
+        <DockPanel LastChildFill="False" Grid.Column="1" Margin="3" Grid.Row="0">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">
+                <Button Height="50" Margin="3" Name="gg_but_randomgraph"  DockPanel.Dock="Top" UseLayoutRounding="True">
+                    <Image Source="/Images/dice.png"/>
+                </Button>
                 <Button Height="50" Margin="3" Name="gg_but_relayout" DockPanel.Dock="Top" UseLayoutRounding="True">
                     <Image Source="/Images/update.png"/>
                 </Button>
             </StackPanel>
-    </DockPanel>
-            <Label Content="First node" Grid.Row="1" Margin="1" />
-            <TextBox Margin="3" Grid.Row="2" MaxWidth="105"/>
-            <Label Content="Second node" Grid.Row="3" Margin="1" />
-            <TextBox Margin="3" Grid.Row="4" MaxWidth="105"/>
-            <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="5" Margin="3"/>
-            <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="6" Margin="3"/>
-            
-            <TextBox Name="txtNewVertex" Margin="3" Grid.Row="7" MaxWidth="105"/>
-            <Button Name="btnAdd" Content="Add vertex" MaxWidth="105" Grid.Row="8" Margin="3" Click="btnAdd_Click"/>
+         </DockPanel>
+         <Label Content="First node" Grid.Row="1" Margin="1" />
+         <TextBox Margin="3" Grid.Row="2" MaxWidth="105"/>
+         <Label Content="Second node" Grid.Row="3" Margin="1" />
+         <TextBox Margin="3" Grid.Row="4" MaxWidth="105"/>
+         <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="5" Margin="3"/>
+         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="6" Margin="3"/>
+         
+         <TextBox Name="txtNewVertex" Margin="3" Grid.Row="7" MaxWidth="105"/>
+         <Button Name="btnAdd" Content="Add vertex" MaxWidth="105" Grid.Row="8" Margin="3" Click="btnAdd_Click"/>
         </Grid>
     </Grid>
 </Window>
