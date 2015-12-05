@@ -12,14 +12,36 @@
         <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
 
-
-
     <controls:ZoomControl x:Name="zoomctrl" Grid.Row="1">
         <local:NetworkGraphArea x:Name="Area"/>
     </controls:ZoomControl>
 
+        <Grid x:Name="InputBox" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            MinWidth="250"
+            Background="White" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Input Box:"/>
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="btnSubmit" Margin="5" Content="Submit" Background="{x:Null}"
+                                />
+                        <Button x:Name="btnCancel" Margin="5" Content="Cancel" Background="{x:Null}"
+                                />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -45,6 +67,10 @@
             <Label Content="Second node" Grid.Row="3" Margin="1" />
             <TextBox Margin="3" Grid.Row="4" MaxWidth="105"/>
             <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="5" Margin="3"/>
+            <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="6" Margin="3"/>
+            
+            <TextBox Name="txtNewVertex" Margin="3" Grid.Row="7" MaxWidth="105"/>
+            <Button Name="btnAdd" Content="Add vertex" MaxWidth="105" Grid.Row="8" Margin="3" Click="btnAdd_Click"/>
         </Grid>
     </Grid>
 </Window>

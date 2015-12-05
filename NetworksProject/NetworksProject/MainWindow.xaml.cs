@@ -24,25 +24,38 @@ namespace NetworksProject
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window, IDisposable
     {
+
+        private DataEdge Test;
+        private NetworkGXLogicCore logicCore;
+        private NetworkGraph dataGraph;
+        private int clTest = 0;
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            //Customize Zoombox a bit
+            //Set minimap (overview) window to be visible by default
+            ZoomControl.SetViewFinderVisibility(zoomctrl, Visibility.Visible);
+            //Set Fill zooming strategy so whole graph will be always visible
+            zoomctrl.ZoomToFill();
+            
+            //Lets setup GraphArea settings
+            GraphAreaExample_Setup();
+            zoomctrl.MouseDoubleClick += ((h, j) => {
 
-             //Customize Zoombox a bit
-             //Set minimap (overview) window to be visible by default
-             ZoomControl.SetViewFinderVisibility(zoomctrl, Visibility.Visible);
-             //Set Fill zooming strategy so whole graph will be always visible
-             zoomctrl.ZoomToFill();
-
-             //Lets setup GraphArea settings
-             GraphAreaExample_Setup();
-
-             gg_but_randomgraph.Click += gg_but_randomgraph_Click;
-             gg_but_relayout.Click += gg_but_relayout_Click;
-
-             Loaded += MainWindow_Loaded;
+                InputBox.Visibility = Visibility.Visible;
+                logicCore.Graph.AddVertex(new DataVertex(txtNewVertex.Text));
+                gg_but_randomgraph_Click(null, null);
+            });
+            Area.VertexMouseEnter += ((h,j) => { j.VertexControl.ToolTip = j.VertexControl.Vertex.ToString(); } );
+            gg_but_randomgraph.Click += gg_but_randomgraph_Click;
+            gg_but_relayout.Click += gg_but_relayout_Click;
+            
+            Loaded += MainWindow_Loaded;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -57,6 +70,9 @@ namespace NetworksProject
             //This method initiates graph relayout process which involves consequnet call to all selected algorithms.
             //It behaves like GenerateGraph() method except that it doesn't create any visual object. Only update existing ones
             //using current Area.Graph data graph.
+
+
+
             Area.RelayoutGraph();
             zoomctrl.ZoomToFill();
         }
@@ -70,6 +86,14 @@ namespace NetworksProject
             //Optionaly we set second param to True (True by default) so this method will automaticaly checks and assigns missing unique data ids
             //for edges and vertices in _dataGraph.
             //Note! Area.Graph property will be replaced by supplied _dataGraph object (if any).
+
+            //if (clTest == 2)
+            //{
+            //    logicCore.Graph.AddVertex(new DataVertex("Custom"));
+            //    logicCore.Graph.AddEdge(new DataEdge(logicCore.Graph.Vertices.ElementAt(8), logicCore.Graph.Vertices.ElementAt(9)) { Text = "150", Weight = 150 });
+            //}
+            //clTest++;
+
             Area.GenerateGraph(true, true);
             //Area.UpdateParallelEdgesData();
             /* 
@@ -77,7 +101,6 @@ namespace NetworksProject
              * (VertexControl and EdgeControl classes).
              * 
              */
-
             //This method sets the dash style for edges. It is applied to all edges in Area.EdgesList. You can also set dash property for
             //each edge individually using EdgeControl.DashStyle property.
             //For ex.: Area.EdgesList[0].DashStyle = GraphX.EdgeDashStyle.Dash;
@@ -91,6 +114,16 @@ namespace NetworksProject
                 item.AlignLabelsToEdges = true;
                 item.LabelVerticalOffset = 10;
             }
+
+            //!!!!
+            Area.EdgesList[Test].DashStyle = EdgeDashStyle.Dot;
+            Area.EdgesList[Test].Foreground = Brushes.Red;
+
+            //foreach (var item in Area.EdgesList.Values)
+            //{
+            //    item.DashStyle = EdgeDashStyle.Dot;
+            //}
+
             //This method sets edges labels visibility. It is also applied to all edges in Area.EdgesList. You can also set property for
             //each edge individually using property, for ex: Area.EdgesList[0].ShowLabel = true;
             Area.ShowAllEdgesLabels(true);
@@ -101,7 +134,7 @@ namespace NetworksProject
         private NetworkGraph GraphExample_Setup()
         {
             //Lets make new data graph instance
-            var dataGraph = new NetworkGraph();
+            dataGraph = new NetworkGraph();
             
             //Now we need to create edges and vertices to fill data graph
             //This edges and vertices will represent graph structure and connections
@@ -122,6 +155,7 @@ namespace NetworksProject
             var vlist = dataGraph.Vertices.ToList();
             //Then create two edges optionaly defining Text property to show who are connected
             var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = "1", Weight = 1 };
+            Test = dataEdge;
             dataGraph.AddEdge(dataEdge);
             dataEdge = new DataEdge(vlist[0], vlist[2]) { Text = "2", Weight = 2 };
             dataGraph.AddEdge(dataEdge);
@@ -156,7 +190,7 @@ namespace NetworksProject
         private NetworkGraph GraphRandom_Setup()
         {
             //Lets make new data graph instance
-            var dataGraph = new NetworkGraph();
+            dataGraph = new NetworkGraph();
             //Now we need to create edges and vertices to fill data graph
             //This edges and vertices will represent graph structure and connections
             //Lets make some vertices
@@ -188,7 +222,7 @@ namespace NetworksProject
         private void GraphAreaExample_Setup()
         {
             //Lets create logic core and filled data graph with edges and vertices
-            var logicCore = new NetworkGXLogicCore() { Graph = GraphExample_Setup() };
+            logicCore = new NetworkGXLogicCore() { Graph = GraphExample_Setup() };
             //????
             logicCore.EnableParallelEdges = true;
             //This property sets layout algorithm that will be used to calculate vertices positions
@@ -226,6 +260,16 @@ namespace NetworksProject
             //If you plan dynamicaly create and destroy GraphArea it is wise to use Dispose() method
             //that ensures that all potential memory-holding objects will be released.
             Area.Dispose();
+        }
+
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if(!string.IsNullOrWhiteSpace(txtNewVertex.Text))
+            {
+                logicCore.Graph.AddVertex(new DataVertex(txtNewVertex.Text));
+                //logicCore.Graph.AddEdge(new DataEdge(logicCore.Graph.Vertices.ElementAt(8), logicCore.Graph.Vertices.ElementAt(9)) { Text = "150", Weight = 150 });
+                gg_but_randomgraph_Click(null, null);
+            }
         }
     }
 }
