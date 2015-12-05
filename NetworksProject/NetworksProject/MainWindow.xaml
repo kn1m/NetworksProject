@@ -4,27 +4,47 @@
         xmlns:local="clr-namespace:NetworksProject"
         xmlns:controls="http://schemas.panthernet.ru/graphx/"
         Title="Network's graph" Height="600" Width="825">
+    
+    
 <Grid>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
 
-    <!-- Here we create our GraphArea layout container wrapped into the Zoombox for vast zooming capabilities.
-             This is the standard approach for GraphX.-->
+
+
     <controls:ZoomControl x:Name="zoomctrl" Grid.Row="1">
         <local:NetworkGraphArea x:Name="Area"/>
     </controls:ZoomControl>
 
-    <DockPanel LastChildFill="False" Grid.Column="1" Margin="3" Grid.RowSpan="2">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+            <DockPanel LastChildFill="False" Grid.Column="1" Margin="3" Grid.Row="0">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">
             <Button Height="50" Margin="3" Name="gg_but_randomgraph"  DockPanel.Dock="Top" UseLayoutRounding="True">
                 <Image Source="/Images/dice.png"/>
             </Button>
-            <Button Height="50" Margin="3" Name="gg_but_relayout" DockPanel.Dock="Top" UseLayoutRounding="True">
-                <Image Source="/Images/update.png"/>
-            </Button>
-        </StackPanel>
+                <Button Height="50" Margin="3" Name="gg_but_relayout" DockPanel.Dock="Top" UseLayoutRounding="True">
+                    <Image Source="/Images/update.png"/>
+                </Button>
+            </StackPanel>
     </DockPanel>
-</Grid>
+            <Label Content="First node" Grid.Row="1" Margin="1" />
+            <TextBox Margin="3" Grid.Row="2" MaxWidth="105"/>
+            <Label Content="Second node" Grid.Row="3" Margin="1" />
+            <TextBox Margin="3" Grid.Row="4" MaxWidth="105"/>
+            <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="5" Margin="3"/>
+        </Grid>
+    </Grid>
 </Window>

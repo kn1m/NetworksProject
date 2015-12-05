@@ -23,5 +23,14 @@ namespace NetworksProject
         {
             Text = text;
         }
+
+        public static List<DataVertex> GetDefaultSetUp()
+        {
+            var predifined = new List<DataVertex>();
+
+
+            return predifined;
+        }
+
     }
 }
