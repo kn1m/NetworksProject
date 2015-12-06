@@ -10,7 +10,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <controls:ZoomControl x:Name="zoomctrl" Grid.Row="1">
+        <controls:ZoomControl Margin="4,4,4,4" x:Name="zoomctrl" Grid.Row="1">
             <local:NetworkGraphArea x:Name="Area"/>
         </controls:ZoomControl>
 
@@ -80,13 +80,8 @@
          </DockPanel>
          <Label Content="First node" Grid.Row="1" Margin="1" />
          <TextBox Margin="3" Grid.Row="2" MaxWidth="105"/>
-         <Label Content="Second node" Grid.Row="3" Margin="1" />
-         <TextBox Margin="3" Grid.Row="4" MaxWidth="105"/>
-         <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="5" Margin="3"/>
-         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="6" Margin="3"/>
-         
-         <TextBox Name="txtNewVertex" Margin="3" Grid.Row="7" MaxWidth="105"/>
-         <Button Name="btnAdd" Content="Add vertex" MaxWidth="105" Grid.Row="8" Margin="3" Click="btnAdd_Click"/>
+         <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="3" Margin="3"/>
+         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="4" Margin="3"/>
         </Grid>
     </Grid>
 </Window>
