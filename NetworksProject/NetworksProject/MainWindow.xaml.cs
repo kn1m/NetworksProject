@@ -78,7 +78,6 @@ namespace NetworksProject
             //This method initiates graph relayout process which involves consequnet call to all selected algorithms.
             //It behaves like GenerateGraph() method except that it doesn't create any visual object. Only update existing ones
             //using current Area.Graph data graph.
-            Area.ShowAllEdgesArrows(false);
             Area.RelayoutGraph();
             zoomctrl.ZoomToFill();
         }
@@ -112,11 +111,21 @@ namespace NetworksProject
             {
                 item.AlignLabelsToEdges = true;
                 item.LabelVerticalOffset = 10;
+                
+
             }
 
+            foreach (var item in Area.EdgesList.Keys)
+            {
+                if (item.IsSatelite)
+                    Area.EdgesList[item].Foreground = Brushes.Green;
+            }
+
+
+
             //!!!!
-            Area.EdgesList[Test].DashStyle = EdgeDashStyle.Dot;
-            Area.EdgesList[Test].Foreground = Brushes.Red;
+            //Area.EdgesList[Test].DashStyle = EdgeDashStyle.Dot;
+            //Area.EdgesList[Test].Foreground = Brushes.Red;
 
             //foreach (var item in Area.EdgesList.Values)
             //{
@@ -127,11 +136,6 @@ namespace NetworksProject
             //each edge individually using property, for ex: Area.EdgesList[0].ShowLabel = true;
             Area.ShowAllEdgesLabels(true);
 
-
-            
-            Area.ShowAllEdgesArrows(false);
-
-            Area.RelayoutGraph();
             zoomctrl.ZoomToFill();
         }
         
@@ -158,34 +162,34 @@ namespace NetworksProject
             //get the indexed list of graph vertices we have already added
             var vlist = dataGraph.Vertices.ToList();
             //Then create two edges optionaly defining Text property to show who are connected
-            var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = "1", Weight = 1 };
+            var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = "1", Weight = 1, IsSatelite = false };
             Test = dataEdge;
             dataGraph.AddEdge(dataEdge);
-            dataEdge = new DataEdge(vlist[0], vlist[2]) { Text = "2", Weight = 2 };
+            dataEdge = new DataEdge(vlist[0], vlist[2]) { Text = "2", Weight = 2, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[1], vlist[2]) { Text = "3", Weight = 3 };
+            dataEdge = new DataEdge(vlist[1], vlist[2]) { Text = "3", Weight = 3, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[2], vlist[3]) { Text = "5", Weight = 5 };
+            dataEdge = new DataEdge(vlist[2], vlist[3]) { Text = "5", Weight = 5, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[3], vlist[4]) { Text = "7", Weight = 7 };
+            dataEdge = new DataEdge(vlist[3], vlist[4]) { Text = "7", Weight = 7, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8 };
+            dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8, IsSatelite = true };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[7], vlist[8]) { Text = "12", Weight = 12};
+            dataEdge = new DataEdge(vlist[7], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[4], vlist[5]) { Text = "15", Weight = 15 };
+            dataEdge = new DataEdge(vlist[4], vlist[5]) { Text = "15", Weight = 15, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[6], vlist[5]) { Text = "21", Weight = 21 };
+            dataEdge = new DataEdge(vlist[6], vlist[5]) { Text = "21", Weight = 21, IsSatelite = false };
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[7], vlist[6]) { Text = "26", Weight = 26 };
+            dataEdge = new DataEdge(vlist[7], vlist[6]) { Text = "26", Weight = 26, IsSatelite = true };
             dataGraph.AddEdge(dataEdge);
 
             return dataGraph;
@@ -195,29 +199,6 @@ namespace NetworksProject
         {
             //Lets make new data graph instance
             dataGraph = new NetworkGraph();
-            //Now we need to create edges and vertices to fill data graph
-            //This edges and vertices will represent graph structure and connections
-            //Lets make some vertices
-            for (int i = 1; i < 10; i++)
-            {
-                //Create new vertex with specified Text. Also we will assign custom unique ID.
-                //This ID is needed for several features such as serialization and edge routing algorithms.
-                //If you don't need any custom IDs and you are using automatic Area.GenerateGraph() method then you can skip ID assignment
-                //because specified method automaticaly assigns missing data ids (this behavior controlled by method param).
-                var dataVertex = new DataVertex("MyVertex " + i);
-                //Add vertex to data graph
-                dataGraph.AddVertex(dataVertex);
-            }
-
-            //Now lets make some edges that will connect our vertices
-            //get the indexed list of graph vertices we have already added
-            var vlist = dataGraph.Vertices.ToList();
-            //Then create two edges optionaly defining Text property to show who are connected
-            var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = string.Format("{0} -> {1}", vlist[0], vlist[1]) };
-            dataGraph.AddEdge(dataEdge);
-            dataEdge = new DataEdge(vlist[2], vlist[3]) { Text = string.Format("{0} -> {1}", vlist[2], vlist[3]) };
-            dataGraph.AddEdge(dataEdge);
-
             return dataGraph;
         }
 
@@ -294,7 +275,11 @@ namespace NetworksProject
                     var ver = logicCore.Graph.Vertices.Where(x => x.Text == NVertexTextBox.Text);
                     if (ver.Count() != 0)
                     {
-                        logicCore.Graph.AddEdge(new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight });
+                        if(isRegionalCheck.IsChecked.Value)
+                            logicCore.Graph.AddEdge(new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true });
+                        else
+                            logicCore.Graph.AddEdge(new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false });
+
                         gg_but_randomgraph_Click(null, null);
                     }
                 }
@@ -307,6 +292,35 @@ namespace NetworksProject
         {
             EdgeInputBox.Visibility = Visibility.Collapsed;
             EdgeTextBox.Text = null;
+        }
+
+        private void btnCustom_Click(object sender, RoutedEventArgs e)
+        {
+
+            Area.LogicCore.Dispose();
+            Area.ClearLayout();
+
+            logicCore = new NetworkGXLogicCore() { Graph = GraphRandom_Setup() };
+            //This property sets layout algorithm that will be used to calculate vertices positions
+            //Different algorithms uses different values and some of them uses edge Weight property.
+            logicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.KK;
+            //Now we can set parameters for selected algorithm using AlgorithmFactory property. This property provides methods for
+            //creating all available algorithms and algo parameters.
+            logicCore.DefaultLayoutAlgorithmParams = logicCore.AlgorithmFactory.CreateLayoutParameters(LayoutAlgorithmTypeEnum.KK);
+            //Unfortunately to change algo parameters you need to specify params type which is different for every algorithm.
+            ((KKLayoutParameters)logicCore.DefaultLayoutAlgorithmParams).MaxIterations = 100;
+
+            logicCore.DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
+
+            logicCore.DefaultOverlapRemovalAlgorithmParams.HorizontalGap = 50;
+            logicCore.DefaultOverlapRemovalAlgorithmParams.VerticalGap = 50;
+
+            logicCore.DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
+            logicCore.AsyncAlgorithmCompute = false;
+            Area.LogicCore = logicCore;
+
+            gg_but_randomgraph_Click(null, null);
+
         }
     }
 }

@@ -21,6 +21,9 @@ namespace NetworksProject
 
         public string Text { get; set; }
 
+        public int RegionId { get; set; }
+        public bool IsSatelite { get; set; }
+
         public override string ToString()
         {
             return Text;

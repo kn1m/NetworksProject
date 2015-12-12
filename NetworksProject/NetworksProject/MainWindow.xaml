@@ -44,9 +44,10 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
                 <StackPanel>
-                    <TextBlock Margin="5" Text="Enter second vertex name and nee edge weigth:"/>
+                    <TextBlock Margin="5" Text="Enter second vertex name and new edge weigth:"/>
                     <TextBox MinWidth="150" HorizontalAlignment="Center" Margin="0,0,0,4" VerticalAlignment="Center" x:Name="NVertexTextBox"/>
                     <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="EdgeTextBox"/>
+                    <CheckBox x:Name="isRegionalCheck" IsChecked="False" Content="Satellite" Margin="58,4,0,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="btnSubmitEdge" Margin="5" Content="Submit" Click="btnSubmitEdge_Click"/>
                         <Button x:Name="btnCancelEdge" Margin="5" Content="Cancel" Click="btnCancelEdge_Click"/>
@@ -81,7 +82,7 @@
          <Label Content="First node" Grid.Row="1" Margin="1" />
          <TextBox Margin="3" Grid.Row="2" MaxWidth="105"/>
          <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="3" Margin="3"/>
-         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="4" Margin="3"/>
+         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="4" Margin="3" Click="btnCustom_Click"/>
         </Grid>
     </Grid>
 </Window>
