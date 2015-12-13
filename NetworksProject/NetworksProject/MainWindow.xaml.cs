@@ -32,11 +32,19 @@ namespace NetworksProject
         private DataVertex _selected;
         private NetworkGXLogicCore logicCore;
         private NetworkGraph dataGraph;
+        private string Routing;
+
+        private List<DataVertex> _vertexes = new List<DataVertex>();
+        private Dictionary<DataVertex, List<DataEdge>>  _VertexEdgeMapping = new Dictionary<DataVertex, List<DataEdge>>();
+        private Dictionary<DataVertex, string> color = new Dictionary<DataVertex, string>();
+        private Dictionary<DataVertex, DataVertex> parent = new Dictionary<DataVertex, DataVertex>();
+        private List<List<DataVertex>> paths = new List<List<DataVertex>>();
+        private List<List<DataVertex>> paths1 = new List<List<DataVertex>>();
 
         public MainWindow()
         {
             InitializeComponent();
-            
+            Routing = "";
             //Customize Zoombox a bit
             //Set minimap (overview) window to be visible by default
             ZoomControl.SetViewFinderVisibility(zoomctrl, Visibility.Visible);
@@ -55,6 +63,8 @@ namespace NetworksProject
                 _selected = (DataVertex)j.VertexControl.Vertex;
                 EdgeInputBox.Visibility = Visibility.Visible; });
 
+            Area.EdgeMouseEnter += ((h,j) => { j.EdgeControl.ToolTip = j.EdgeControl.Edge.ToString(); });
+
             //Vertex tooltip
             Area.VertexMouseEnter += ((h,j) => { j.VertexControl.ToolTip = j.VertexControl.Vertex.ToString(); } );
 
@@ -63,7 +73,177 @@ namespace NetworksProject
             gg_but_relayout.Click += gg_but_relayout_Click;
             
             Loaded += MainWindow_Loaded;
+
+            SearchShortestWay(true);
         }
+
+
+        //private void ff(DataVertex root)
+        //{
+
+        //    foreach (DataVertex vertex in _vertexes)
+        //    {
+        //        color.Add(vertex, "white");
+        //        parent.Add(vertex, null);
+        //    }
+
+
+        //    Queue<DataVertex> queue = new Queue<DataVertex>();
+        //    queue.Enqueue(root);
+
+        //    var asd = new List<DataVertex>();
+        //    while (queue.Count != 0)
+        //    {
+        //        DataVertex temp = queue.Dequeue();
+                
+        //        foreach (DataEdge edge in _VertexEdgeMapping[temp])
+        //        {
+        //            if (color[edge.Target] == "white")
+        //            {
+        //                color[edge.Target] = "gray";
+        //                parent[edge.Target] = temp;
+        //                queue.Enqueue(edge.Target);
+        //                asd.Add(edge.Source);
+        //                asd.Add(edge.Target);
+        //            }
+                   
+
+        //        }
+
+        //        //MessageBox.Show(temp.Text);
+        //        //asd.Add(temp);
+        //        color[temp] = "black";
+        //        Console.WriteLine("Vertex {0} has been found!", temp.Text);
+        //        paths.Add(new List<DataVertex>(asd));
+                
+
+        //    }
+        //}
+
+
+        private void ff(DataVertex root)
+        {
+
+            foreach (DataVertex vertex in _vertexes)
+            {
+                color.Add(vertex, "white");
+                parent.Add(vertex, null);
+            }
+
+
+            Queue<DataVertex> queue = new Queue<DataVertex>();
+            queue.Enqueue(root);
+
+            //var asd = new List<DataVertex>();
+            while (queue.Count != 0)
+            {
+                DataVertex temp = queue.Dequeue();
+
+                foreach (DataEdge edge in _VertexEdgeMapping[temp])
+                {
+                    if (color[edge.Target] == "white")
+                    {
+                        var asd = new List<DataVertex>();
+                        color[edge.Target] = "gray";
+                        parent[edge.Target] = temp;
+                        queue.Enqueue(edge.Target);
+
+                        asd.Add(edge.Source);
+
+                        asd.Add(edge.Target);
+
+                        paths.Add(new List<DataVertex>(asd));
+                    }
+                }
+
+                color[temp] = "black";
+                
+                Console.WriteLine("Vertex {0} has been found!", temp.Text);
+            }
+        }
+
+        private void SearchShortestWay(bool mode)
+        {
+
+            //int vertexCount = Area.LogicCore.Graph.VertexCount;
+            //var HopesMatrix = new int[vertexCount, vertexCount];
+            //var ChannelMatrix = new int[vertexCount, vertexCount];
+
+            //foreach (var item in Area.LogicCore.Graph.Edges)
+            //{
+            //    HopesMatrix[item.Source.ID, item.Target.ID] = 1;
+            //    ChannelMatrix[item.Source.ID, item.Target.ID] = (int)item.Weight;
+            //}
+
+
+
+            _vertexes = Area.LogicCore.Graph.Vertices.ToList();
+            foreach (var item in Area.LogicCore.Graph.Vertices)
+            {
+                _VertexEdgeMapping.Add(item, item.Edges);
+            }
+
+            DataVertex tmp = null;
+            var temp = new List<DataVertex>();
+            foreach (var item in Area.LogicCore.Graph.Vertices)
+            {
+
+                ff(item);
+
+                tmp = item;
+
+
+
+
+
+                break;
+            }
+
+            var la = new List<List<DataVertex>>();
+            foreach (var item in paths)
+            {
+
+                foreach (var itemss in paths)
+                {
+                    if (item[1] == itemss[0])
+                    {
+                        paths1.Add(new List<DataVertex>(item.Concat(itemss)));
+                        la.Add(itemss);
+                    }
+                }
+            }
+
+
+
+            foreach (var itemz in paths1)
+            {
+                if (itemz.First() != tmp)
+                {
+                    itemz.Insert(0, tmp);
+                }
+
+            }
+
+
+            foreach (var item in la)
+            {
+                paths.Remove(item);
+            }
+
+            paths1 = new List<List<DataVertex>>(paths1.Concat(paths));
+            paths.Clear();
+
+            foreach (var item in paths1)
+            {
+                paths.Add(item.Distinct().ToList());
+            }
+
+            Console.WriteLine();
+
+        }
+
+
+
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -147,13 +327,13 @@ namespace NetworksProject
             //Now we need to create edges and vertices to fill data graph
             //This edges and vertices will represent graph structure and connections
             //Lets make some vertices
-            for (int i = 1; i < 10; i++)
+            for (int i = 0; i < 9; i++)
             {
                 //Create new vertex with specified Text. Also we will assign custom unique ID.
                 //This ID is needed for several features such as serialization and edge routing algorithms.
                 //If you don't need any custom IDs and you are using automatic Area.GenerateGraph() method then you can skip ID assignment
                 //because specified method automaticaly assigns missing data ids (this behavior controlled by method param).
-                var dataVertex = new DataVertex("Node " + i);
+                var dataVertex = new DataVertex("Node " + i) { ID = i};
                 //Add vertex to data graph
                 dataGraph.AddVertex(dataVertex);
             }
@@ -163,34 +343,68 @@ namespace NetworksProject
             var vlist = dataGraph.Vertices.ToList();
             //Then create two edges optionaly defining Text property to show who are connected
             var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = "1", Weight = 1, IsSatelite = false };
+            vlist[0].Edges.Add(dataEdge);
+            vlist[1].Edges.Add(dataEdge);
             Test = dataEdge;
             dataGraph.AddEdge(dataEdge);
             dataEdge = new DataEdge(vlist[0], vlist[2]) { Text = "2", Weight = 2, IsSatelite = false };
+            vlist[0].Edges.Add(dataEdge);
+            vlist[2].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[1], vlist[2]) { Text = "3", Weight = 3, IsSatelite = false };
+            vlist[1].Edges.Add(dataEdge);
+            vlist[2].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[2], vlist[3]) { Text = "5", Weight = 5, IsSatelite = false };
+            vlist[2].Edges.Add(dataEdge);
+            vlist[3].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[3], vlist[4]) { Text = "7", Weight = 7, IsSatelite = false };
+            vlist[4].Edges.Add(dataEdge);
+            vlist[3].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge); 
+
+            dataEdge = new DataEdge(vlist[0], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false };
+            vlist[0].Edges.Add(dataEdge);
+            vlist[8].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+
+            dataEdge = new DataEdge(vlist[0], vlist[5]) { Text = "12", Weight = 12, IsSatelite = false };
+            vlist[0].Edges.Add(dataEdge);
+            vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8, IsSatelite = true };
+            vlist[2].Edges.Add(dataEdge);
+            vlist[4].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[7], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false };
+            vlist[7].Edges.Add(dataEdge);
+            vlist[8].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[4], vlist[5]) { Text = "15", Weight = 15, IsSatelite = false };
+            vlist[4].Edges.Add(dataEdge);
+            vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[6], vlist[5]) { Text = "21", Weight = 21, IsSatelite = false };
+            dataEdge = new DataEdge( vlist[5], vlist[6]) { Text = "21", Weight = 21, IsSatelite = false };
+            vlist[6].Edges.Add(dataEdge);
+            vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[7], vlist[6]) { Text = "26", Weight = 26, IsSatelite = true };
+            dataEdge = new DataEdge( vlist[6], vlist[7]) { Text = "26", Weight = 26, IsSatelite = true };
+            vlist[6].Edges.Add(dataEdge);
+            vlist[7].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
+
+            
+
 
             return dataGraph;
         }
@@ -283,6 +497,14 @@ namespace NetworksProject
                         gg_but_randomgraph_Click(null, null);
                     }
                 }
+                else
+                {
+                    WarningBox.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                WarningBox.Visibility = Visibility.Visible;
             }
             NVertexTextBox.Text = null;
             EdgeTextBox.Text = null;
@@ -321,6 +543,11 @@ namespace NetworksProject
 
             gg_but_randomgraph_Click(null, null);
 
+        }
+
+        private void btnSubmitWarning_Click(object sender, RoutedEventArgs e)
+        {
+            WarningBox.Visibility = Visibility.Collapsed;
         }
     }
 }

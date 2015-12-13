@@ -9,14 +9,5 @@ namespace NetworksProject
     //Graph data class
     public class NetworkGraph : BidirectionalGraph<DataVertex, DataEdge>
     {
-        public List<DataVertex> ShortestPath()
-        {
-            var path = new List<DataVertex>();
-
-
-
-            return path;
-        }
-
     }
 }
