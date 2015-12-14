@@ -7,21 +7,23 @@
         Title="Network's graph" Height="600" Width="825">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <!--<ColumnDefinition Width="Auto"/>-->
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" Margin="4,4,4,4">
-            <TextBlock Name="rt" Text="Routing table:"/>
-        </Grid>
+        <!--<Grid Grid.Column="0" Margin="4,4,4,4">
+            <ScrollViewer>
+                <TextBlock Name="rt" Text="Routing table:"/>
+            </ScrollViewer>
+        </Grid>-->
         
         
-        <controls:ZoomControl Margin="4,4,4,4" Grid.Column="1" x:Name="zoomctrl" Grid.Row="1">
+        <controls:ZoomControl Margin="4,4,4,4" Grid.Column="0" x:Name="zoomctrl" Grid.Row="1">
             <local:NetworkGraphArea x:Name="Area"/>
         </controls:ZoomControl>
 
-        <Grid x:Name="VertexInputBox" Grid.Column="1" Visibility="Collapsed">
+        <Grid x:Name="VertexInputBox" Grid.Column="0" Visibility="Collapsed">
             <Grid Background="Black" Opacity="0.5"/>
             <Border
             MinWidth="250"
@@ -32,7 +34,7 @@
             VerticalAlignment="Center">
                 <StackPanel>
                     <TextBlock Margin="5" Text="Enter new node name:"/>
-                    <ExtWPF:WatermarkTextBox Watermark="Vertex name"  MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="VertexTextBox"/>
+                    <ExtWPF:WatermarkTextBox Watermark="Node name"  MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="VertexTextBox"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="btnSubmit" Margin="5" Content="Submit" Click="btnSubmit_Click"/>
                         <Button x:Name="btnCancel" Margin="5" Content="Cancel" Click="btnCancel_Click"/>
@@ -41,7 +43,7 @@
             </Border>
         </Grid>
 
-        <Grid x:Name="EdgeInputBox" Grid.Column="1" Visibility="Collapsed">
+        <Grid x:Name="EdgeInputBox" Grid.Column="0" Visibility="Collapsed">
             <Grid Background="Black" Opacity="0.5"/>
             <Border
             MinWidth="250"
@@ -51,10 +53,11 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
                 <StackPanel>
-                    <TextBlock Margin="5" Text="Enter second vertex name and new edge weigth:"/>
-                    <ExtWPF:WatermarkTextBox Watermark="Second vertex name" MinWidth="150" HorizontalAlignment="Center" Margin="0,0,0,4" VerticalAlignment="Center" x:Name="NVertexTextBox"/>
+                    <TextBlock Margin="5" Text="Enter second node name and new edge weigth:"/>
+                    <ExtWPF:WatermarkTextBox Watermark="Second node name" MinWidth="150" HorizontalAlignment="Center" Margin="0,0,0,4" VerticalAlignment="Center" x:Name="NVertexTextBox"/>
                     <ExtWPF:WatermarkTextBox Watermark="Edge weight" MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="EdgeTextBox"/>
                     <CheckBox x:Name="isRegionalCheck" IsChecked="False" Content="Satellite" Margin="58,4,0,0"/>
+                    <CheckBox x:Name="isDuplexCheck" IsChecked="False" Content="Duplex" Margin="58,4,0,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="btnSubmitEdge" Margin="5" Content="Submit" Click="btnSubmitEdge_Click"/>
                         <Button x:Name="btnCancelEdge" Margin="5" Content="Cancel" Click="btnCancelEdge_Click"/>
@@ -63,7 +66,7 @@
             </Border>
         </Grid>
 
-        <Grid x:Name="WarningBox" Grid.Column="1" Visibility="Collapsed">
+        <Grid x:Name="WarningBox" Grid.Column="0" Visibility="Collapsed">
             <Grid Background="Red" Opacity="0.5"/>
             <Border
             MinWidth="250"
@@ -94,7 +97,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-        <DockPanel LastChildFill="False" Grid.Column="2" Margin="3" Grid.Row="0">
+        <DockPanel LastChildFill="False" Grid.Column="1" Margin="3" Grid.Row="0">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">
                 <Button Height="50" Margin="3" Name="gg_but_randomgraph"  DockPanel.Dock="Top" UseLayoutRounding="True">
                     <Image Source="/Images/dice.png"/>
@@ -105,10 +108,16 @@
             </StackPanel>
          </DockPanel>
          <Label Content="First node" Grid.Row="1" Margin="1" />
-         <TextBox Margin="3" Grid.Row="2" MaxWidth="105"/>
+         <ExtWPF:WatermarkTextBox Watermark="First node" Margin="3" Grid.Row="2" MaxWidth="105"/>
          <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="3" Margin="3"/>
          <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="4" Margin="3" Click="btnCustom_Click"/>
          <Button Name="btnSettings" Content="Settings" MaxWidth="105" Grid.Row="5" Margin="3" />
+            
+         <ExtWPF:WatermarkTextBox Name="selectPackSize" MaxWidth="105" Watermark="Selelect packet" Margin="3" Grid.Row="6"/>
+            <ExtWPF:WatermarkComboBox Watermark="test" MaxWidth="105" Margin="3" Grid.Row="7">
+                <ComboBoxItem>By hopes</ComboBoxItem>
+                <ComboBoxItem>By speed</ComboBoxItem>
+            </ExtWPF:WatermarkComboBox>   
         </Grid>
     </Grid>
 </Window>

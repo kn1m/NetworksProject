@@ -16,24 +16,18 @@ namespace NetworksProject
 
         public List<DataEdge> Edges { get; set; } = new List<DataEdge>();
 
-        public List<List<DataVertex>> Paths
-        {
-            get
-            {
-                var res = new List<List<DataVertex>>();
-
-
-
-                return res;
-            }
-        }
-
-
+        public string Routing { get; set; } = "";
 
         public override string ToString()
         {
             return Text;
         }
+
+        public string GetRouting()
+        {
+            return Environment.NewLine + Routing;
+        }
+
 
         public List<DataVertex> AdjVert
         {
