@@ -23,6 +23,22 @@ namespace NetworksProject
 
         public int RegionId { get; set; }
         public bool IsSatelite { get; set; }
+        public bool isDuplex { get; set; }
+
+        public string GetEdgeType()
+        {
+            var res = "";
+            res += "Weigth: " + Text + Environment.NewLine;
+            if (IsSatelite)
+                res += "Type: Satellite";
+            else
+                res += "Type: Reginonal";
+            if (isDuplex)
+                res += "\r\n         Duplex";
+            else
+                res += "\r\n         Half-duplex";
+            return res;
+        }
 
         public override string ToString()
         {

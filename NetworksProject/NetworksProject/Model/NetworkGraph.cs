@@ -29,7 +29,7 @@ namespace NetworksProject
             }
 
 
-            dataGraph.AddVertex(new DataVertex("Test"));
+            dataGraph.AddVertex(new DataVertex("Test") { ID = dataGraph.VertexCount});
             //Now lets make some edges that will connect our vertices
             //get the indexed list of graph vertices we have already added
             var vlist = dataGraph.Vertices.ToList();

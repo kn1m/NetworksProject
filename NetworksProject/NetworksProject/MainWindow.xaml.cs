@@ -6,6 +6,7 @@ using System.Windows.Media;
 using GraphX.PCL.Common.Enums;
 using GraphX.Controls;
 using GraphX.PCL.Logic.Algorithms.LayoutAlgorithms;
+using System.IO;
 
 namespace NetworksProject
 {
@@ -52,7 +53,18 @@ namespace NetworksProject
                 EdgeInputBox.Visibility = Visibility.Visible; });
 
             
-            Area.EdgeMouseEnter += ((h,j) => { j.EdgeControl.ToolTip = j.EdgeControl.Edge.ToString(); });
+            Area.EdgeMouseEnter += ((h,j) =>
+            {
+
+                foreach (var item in logicCore.Graph.Edges)
+                {
+                    if (item.Text == j.EdgeControl.Edge.ToString())
+                    {
+                        j.EdgeControl.ToolTip = item.GetEdgeType();
+                    }
+                }
+
+            });
 
             //Vertex tooltip
             Area.VertexMouseEnter += ((h,j) => 
@@ -72,6 +84,7 @@ namespace NetworksProject
             gg_but_relayout.Click += gg_but_relayout_Click;
             
             Loaded += MainWindow_Loaded;
+
 
             SearchShortestWay(true);
         }
@@ -150,17 +163,23 @@ namespace NetworksProject
 
         }
 
+
         private void SearchShortestWay(bool mode)
         {
-
             //int vertexCount = Area.LogicCore.Graph.VertexCount;
             //var HopesMatrix = new int[vertexCount, vertexCount];
             //var ChannelMatrix = new int[vertexCount, vertexCount];
+
+
+            //for (int i = 0; i < vertexCount; i++)
+            //    for (int j = 0; j < vertexCount; j++)
+            //        ChannelMatrix[i, j] = -1;
 
             //foreach (var item in Area.LogicCore.Graph.Edges)
             //{
             //    HopesMatrix[item.Source.ID, item.Target.ID] = 1;
             //    ChannelMatrix[item.Source.ID, item.Target.ID] = (int)item.Weight;
+            //    ChannelMatrix[item.Target.ID, item.Source.ID] = (int)item.Weight;
             //}
 
             _vertexes = new List<DataVertex>();
@@ -300,10 +319,13 @@ namespace NetworksProject
                 item.LabelVerticalOffset = 10;
             }
 
+            //Providing proped edge highlight by canal properties
             foreach (var item in Area.EdgesList.Keys)
             {
                 if (item.IsSatelite)
                     Area.EdgesList[item].Foreground = Brushes.Green;
+                if (item.isDuplex)
+                    Area.EdgesList[item].DashStyle = EdgeDashStyle.Dash;
             }
 
             //!!!!
@@ -410,17 +432,37 @@ namespace NetworksProject
                     {
                         if (isRegionalCheck.IsChecked.Value)
                         {
-                            var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true };
-                            _selected.Edges.Add(newEdge);
-                            ver.First().Edges.Add(newEdge);
-                            logicCore.Graph.AddEdge(newEdge);
+                            if (isDuplexCheck.IsChecked.Value)
+                            {
+                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true, isDuplex = true };
+                                _selected.Edges.Add(newEdge);
+                                ver.First().Edges.Add(newEdge);
+                                logicCore.Graph.AddEdge(newEdge);
+                            }
+                            else
+                            {
+                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true, isDuplex = false };
+                                _selected.Edges.Add(newEdge);
+                                ver.First().Edges.Add(newEdge);
+                                logicCore.Graph.AddEdge(newEdge);
+                            }
                         }
                         else
                         {
-                            var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false };
-                            _selected.Edges.Add(newEdge);
-                            ver.First().Edges.Add(newEdge);
-                            logicCore.Graph.AddEdge(newEdge);
+                            if (isDuplexCheck.IsChecked.Value)
+                            {
+                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false,isDuplex = true };
+                                _selected.Edges.Add(newEdge);
+                                ver.First().Edges.Add(newEdge);
+                                logicCore.Graph.AddEdge(newEdge);
+                            }
+                            else
+                            {
+                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false, isDuplex = false };
+                                _selected.Edges.Add(newEdge);
+                                ver.First().Edges.Add(newEdge);
+                                logicCore.Graph.AddEdge(newEdge);
+                            }
                         }
 
                         SearchShortestWay(true);
