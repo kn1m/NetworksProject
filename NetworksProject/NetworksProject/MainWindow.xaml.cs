@@ -7,6 +7,7 @@ using GraphX.PCL.Common.Enums;
 using GraphX.Controls;
 using GraphX.PCL.Logic.Algorithms.LayoutAlgorithms;
 using System.IO;
+using GraphX.Controls.Models;
 
 namespace NetworksProject
 {
@@ -17,18 +18,13 @@ namespace NetworksProject
     public partial class MainWindow : Window, IDisposable
     {
 
-        
         private DataVertex _selected;
         private NetworkGXLogicCore logicCore;
         private NetworkGraph dataGraph;
-        private string Routing;
 
-        private List<DataVertex> _vertexes = new List<DataVertex>();
-        private Dictionary<DataVertex, List<DataEdge>>  _VertexEdgeMapping = new Dictionary<DataVertex, List<DataEdge>>();
-        private Dictionary<DataVertex, string> color = new Dictionary<DataVertex, string>();
-        private Dictionary<DataVertex, DataVertex> parent = new Dictionary<DataVertex, DataVertex>();
-        private List<List<DataVertex>> paths = new List<List<DataVertex>>();
-        private List<List<DataVertex>> paths1 = new List<List<DataVertex>>();
+        private VertexSelectedEventArgs tmp;
+
+        private NetworkGraph Graph;
 
         public MainWindow()
         {
@@ -39,20 +35,21 @@ namespace NetworksProject
             //Set Fill zooming strategy so whole graph will be always visible
             zoomctrl.ZoomToFill();
 
+            var modes = new List<string>() { "By hopes", "By speed" };
+            routingModeBox.ItemsSource = modes;
+            routingModeBox.SelectedItem = modes[0];
+
             //Lets setup GraphArea settings
             GraphAreaExample_Setup();
 
-            //Adding new vertex
-            //zoomctrl.MouseDoubleClick += ((o, s) => { VertexInputBox.Visibility = Visibility.Visible; });
-
             zoomctrl.MouseRightButtonUp += ((o, s) => { VertexInputBox.Visibility = Visibility.Visible; });
 
-            //Adding new edge
+            //Vertex settings
             Area.VertexSelected += ((h, j) => {
+                tmp = j;
                 _selected = (DataVertex)j.VertexControl.Vertex;
-                EdgeInputBox.Visibility = Visibility.Visible; });
+                VertexBox.Visibility = Visibility.Visible; });
 
-            
             Area.EdgeMouseEnter += ((h,j) =>
             {
 
@@ -76,7 +73,6 @@ namespace NetworksProject
                         j.VertexControl.ToolTip = item.Text + "\n\n"+ item.Routing;
                     }
                 }
-                //j.VertexControl.ToolTip = j.VertexControl.Vertex.ToString();
             });
 
             gg_but_randomgraph.Click += gg_but_randomgraph_Click;
@@ -85,208 +81,66 @@ namespace NetworksProject
             
             Loaded += MainWindow_Loaded;
 
-
+            Graph = NetworkGraph.GetDefaultGraph();
+            
             SearchShortestWay(true);
         }
 
-        private void FloodFill(DataVertex root)
+
+        private void btnChangeState_Click(object sender, RoutedEventArgs e)
         {
-
-            foreach (DataVertex vertex in _vertexes)
+            if (_selected.IsEnabled)
             {
-                color.Add(vertex, "white");
-                parent.Add(vertex, null);
+                tmp.VertexControl.Foreground = Brushes.Red;
+                _selected.IsEnabled = false;
             }
-
-            Queue<DataVertex> queue = new Queue<DataVertex>();
-            queue.Enqueue(root);
-
-            while (queue.Count != 0)
+            else
             {
-                DataVertex temp = queue.Dequeue();
-
-                foreach (DataEdge edge in _VertexEdgeMapping[temp])
-                {
-                    if (edge.Target != root)
-                    {
-                        if (color[edge.Target] == "white")
-                        {
-                            var asd = new List<DataVertex>();
-                            color[edge.Target] = "gray";
-                            parent[edge.Target] = temp;
-                            queue.Enqueue(edge.Target);
-
-                            asd.Add(edge.Source);
-                            asd.Add(edge.Target);
-
-                            paths.Add(new List<DataVertex>(asd));
-                        }
-
-                        if (edge.Target == temp)
-                        {
-                            if (color[edge.Source] == "white")
-                            {
-                                var asd = new List<DataVertex>();
-                                color[edge.Source] = "gray";
-                                parent[edge.Source] = temp;
-                                queue.Enqueue(edge.Source);
-
-                                asd.Add(edge.Target);
-                                asd.Add(edge.Source);
-
-                                paths.Add(new List<DataVertex>(asd));
-                            }
-                        }
-
-                    }
-                    else
-                    if (edge.Target == temp)
-                    {
-                        if (color[edge.Source] == "white")
-                        {
-                            var asd = new List<DataVertex>();
-                            color[edge.Source] = "gray";
-                            parent[edge.Source] = temp;
-                            queue.Enqueue(edge.Source);
-
-                            asd.Add(edge.Target);
-                            asd.Add(edge.Source);
-
-                            paths.Add(new List<DataVertex>(asd));
-                        }
-                    }
-                }
-                color[temp] = "black";
+                tmp.VertexControl.Foreground = Brushes.Black;
+                _selected.IsEnabled = true;
             }
-
-
-
+            VertexBox.Visibility = Visibility.Collapsed;
         }
 
+        private void btnAddEdge_Click(object sender, RoutedEventArgs e)
+        {
+            VertexBox.Visibility = Visibility.Collapsed;
+            EdgeInputBox.Visibility = Visibility.Visible;
+        }
 
         private void SearchShortestWay(bool mode)
         {
-            //int vertexCount = Area.LogicCore.Graph.VertexCount;
-            //var HopesMatrix = new int[vertexCount, vertexCount];
-            //var ChannelMatrix = new int[vertexCount, vertexCount];
-
-
-            //for (int i = 0; i < vertexCount; i++)
-            //    for (int j = 0; j < vertexCount; j++)
-            //        ChannelMatrix[i, j] = -1;
-
-            //foreach (var item in Area.LogicCore.Graph.Edges)
-            //{
-            //    HopesMatrix[item.Source.ID, item.Target.ID] = 1;
-            //    ChannelMatrix[item.Source.ID, item.Target.ID] = (int)item.Weight;
-            //    ChannelMatrix[item.Target.ID, item.Source.ID] = (int)item.Weight;
-            //}
-
-            _vertexes = new List<DataVertex>();
-            _VertexEdgeMapping = new Dictionary<DataVertex, List<DataEdge>>();
-            Routing = "Routings:\n\n";
-
-            _vertexes = Area.LogicCore.Graph.Vertices.ToList();
-            foreach (var item in Area.LogicCore.Graph.Vertices)
+            Graph.Traverse(mode);
+            foreach (var currentVertex in Area.LogicCore.Graph.Vertices)
             {
-                _VertexEdgeMapping.Add(item, item.Edges);
-            }
-
-            var temp = new List<DataVertex>();
-            foreach (var item in Area.LogicCore.Graph.Vertices)
-            {
-
-                FloodFill(item);
-                FinalizeRouting(item);
-
-                color = new Dictionary<DataVertex, string>();
-                parent = new Dictionary<DataVertex, DataVertex>();
-                paths = new List<List<DataVertex>>();
-                paths1 = new List<List<DataVertex>>();
-
-
-            }
-
-            //rt.Text = Routing;
-        }
-
-        private void FinalizeRouting(DataVertex currentVertex)
-        {
-
-            //Concatenating steps for each vertex
-            var la = new List<List<DataVertex>>();
-            foreach (var item in paths)
-            {
-                foreach (var itemss in paths)
+                currentVertex.Routing = "";
+                foreach (var item in Area.LogicCore.Graph.Vertices)
                 {
-                    if (item[1] == itemss[0])
+                    if (currentVertex != item)
                     {
-                        paths1.Add(new List<DataVertex>(item.Concat(itemss)));
-                        la.Add(itemss);
-                    }
-                }
-            }
+                        var shortest_path = Graph.shortest_path(currentVertex.ToString(), item.ToString());
 
-            //Fixing result of concatenation
-            foreach (var itemz in paths1)
-            {
-                if (itemz.First() != currentVertex)
-                {
-                    itemz.Insert(0, currentVertex);
-                    foreach (var item in paths)
-                    {
-                        if (paths.Find(x => x[0] == currentVertex && x[1] == itemz[1]) == null)
-                        {       
-                            if (item[0] == currentVertex && item[1].AdjVert.Contains(itemz[1]))
+                        if (shortest_path != null)
+                        {
+                            shortest_path.Add(currentVertex.ToString());
+                            shortest_path.Reverse();
+
+                            foreach (var node in shortest_path)
                             {
-                                itemz.Insert(1, item[1]);
-                                break;
+                                if (node != shortest_path.Last())
+                                {
+                                    currentVertex.Routing += node + " -> ";
+                                }
+                                else
+                                {
+                                    currentVertex.Routing += node + Environment.NewLine;
+                                }
                             }
                         }
                     }
                 }
-
-            }
-
-            //Cleaning already added pathes
-            foreach (var item in la)
-            {
-                paths.Remove(item);
-            }
-
-            //Resulting pathes
-            paths1 = new List<List<DataVertex>>(paths1.Concat(paths));
-            paths.Clear();
-
-            //Removing duplicates for better output
-            foreach (var item in paths1)
-            {
-                paths.Add(item.Distinct().ToList());
-            }
-
-            currentVertex.Routing = "";
-            Routing += currentVertex.ToString();
-            Routing += Environment.NewLine;
-            foreach (var item in paths)
-            {
-                Routing += "\t";
-                foreach (var items in item)
-                {
-                    if (items != item.Last())
-                    {
-                        Routing = Routing + items.Text + " -> ";
-                        currentVertex.Routing += items.Text + " -> ";
-                    }
-                    else
-                    {
-                        Routing = Routing + items.Text + Environment.NewLine;
-                        currentVertex.Routing += items.Text + Environment.NewLine;
-                    }
-                }
-
             }
         }
-
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -405,7 +259,9 @@ namespace NetworksProject
 
             if(!string.IsNullOrWhiteSpace(VertexTextBox.Text))
             {
-                logicCore.Graph.AddVertex(new DataVertex(VertexTextBox.Text));
+                var newVertex = new DataVertex(VertexTextBox.Text);
+                logicCore.Graph.AddVertex(newVertex);
+                Graph = (NetworkGraph)logicCore.Graph;
                 gg_but_randomgraph_Click(null, null);
             }
 
@@ -438,6 +294,7 @@ namespace NetworksProject
                                 _selected.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
+                                Graph = (NetworkGraph)logicCore.Graph;
                             }
                             else
                             {
@@ -445,6 +302,7 @@ namespace NetworksProject
                                 _selected.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
+                                Graph = (NetworkGraph)logicCore.Graph;
                             }
                         }
                         else
@@ -455,6 +313,7 @@ namespace NetworksProject
                                 _selected.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
+                                Graph = (NetworkGraph)logicCore.Graph;
                             }
                             else
                             {
@@ -462,6 +321,8 @@ namespace NetworksProject
                                 _selected.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
+
+                                Graph = (NetworkGraph)logicCore.Graph;
                             }
                         }
 
@@ -520,6 +381,14 @@ namespace NetworksProject
         private void btnSubmitWarning_Click(object sender, RoutedEventArgs e)
         {
             WarningBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnApply_Click(object sender, RoutedEventArgs e)
+        {
+            if (routingModeBox.SelectedItem.ToString() == "By modes")
+                SearchShortestWay(true);
+            else
+                SearchShortestWay(false);
         }
     }
 }

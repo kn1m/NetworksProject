@@ -17,19 +17,19 @@ namespace NetworksProject
             //Now we need to create edges and vertices to fill data graph
             //This edges and vertices will represent graph structure and connections
             //Lets make some vertices
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 30; i++)
             {
                 //Create new vertex with specified Text. Also we will assign custom unique ID.
                 //This ID is needed for several features such as serialization and edge routing algorithms.
                 //If you don't need any custom IDs and you are using automatic Area.GenerateGraph() method then you can skip ID assignment
                 //because specified method automaticaly assigns missing data ids (this behavior controlled by method param).
-                var dataVertex = new DataVertex("Node " + i) { ID = i };
+                var dataVertex = new DataVertex("Node " + i) { ID = i, IsEnabled = true };
                 //Add vertex to data graph
                 dataGraph.AddVertex(dataVertex);
             }
 
 
-            dataGraph.AddVertex(new DataVertex("Test") { ID = dataGraph.VertexCount});
+            //dataGraph.AddVertex(new DataVertex("Test") { ID = dataGraph.VertexCount});
             //Now lets make some edges that will connect our vertices
             //get the indexed list of graph vertices we have already added
             var vlist = dataGraph.Vertices.ToList();
@@ -68,7 +68,7 @@ namespace NetworksProject
             vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8, IsSatelite = true };
+            dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8, IsSatelite = false };
             vlist[2].Edges.Add(dataEdge);
             vlist[4].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
@@ -88,7 +88,7 @@ namespace NetworksProject
             vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[6], vlist[7]) { Text = "26", Weight = 26, IsSatelite = true };
+            dataEdge = new DataEdge(vlist[6], vlist[7]) { Text = "26", Weight = 26, IsSatelite = false };
             vlist[6].Edges.Add(dataEdge);
             vlist[7].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
@@ -98,9 +98,188 @@ namespace NetworksProject
             vlist[9].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
+            //
 
+            dataEdge = new DataEdge(vlist[9], vlist[10]) { Text = "26", Weight = 26, IsSatelite = true };
+            vlist[9].Edges.Add(dataEdge);
+            vlist[10].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[10], vlist[11]) { Text = "26", Weight = 26, IsSatelite = true };
+            vlist[10].Edges.Add(dataEdge);
+            vlist[11].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[10], vlist[12]) { Text = "26", Weight = 26, IsSatelite = true };
+            vlist[10].Edges.Add(dataEdge);
+            vlist[12].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[10], vlist[11]) { Text = "26", Weight = 26, IsSatelite = true };
+            vlist[10].Edges.Add(dataEdge);
+            vlist[11].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[10], vlist[13]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[10].Edges.Add(dataEdge);
+            vlist[13].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+
+            dataEdge = new DataEdge(vlist[11], vlist[12]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[11].Edges.Add(dataEdge);
+            vlist[12].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[12], vlist[13]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[12].Edges.Add(dataEdge);
+            vlist[13].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[13], vlist[14]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[13].Edges.Add(dataEdge);
+            vlist[14].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[13], vlist[19]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[13].Edges.Add(dataEdge);
+            vlist[19].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[14], vlist[15]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[14].Edges.Add(dataEdge);
+            vlist[15].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[15], vlist[16]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[15].Edges.Add(dataEdge);
+            vlist[16].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[15], vlist[17]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[15].Edges.Add(dataEdge);
+            vlist[17].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[15], vlist[18]) { Text = "26", Weight = 26, IsSatelite = false };
+            vlist[15].Edges.Add(dataEdge);
+            vlist[18].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
             return dataGraph;
         }
+
+        
+        public void Traverse(bool mode)
+        {
+            vertices = new Dictionary<string, Dictionary<string, double>>();
+
+            foreach (var currentVertex in Vertices)
+            {
+                var currentEdge = new Dictionary<string, double>();
+
+                foreach (var edge in Edges)
+                {
+                    if (edge.Target == currentVertex)
+                        if (mode)
+                        {
+                            currentEdge[edge.Source.ToString()] = 1;
+                        }
+                        else
+                        {
+                            currentEdge[edge.Source.ToString()] = 1 / edge.Weight;
+                            if(edge.IsSatelite)
+                                currentEdge[edge.Source.ToString()] /= 3;
+                            if(edge.isDuplex)
+                                currentEdge[edge.Source.ToString()] /= 1.5;
+                        }
+                    if (edge.Source == currentVertex)
+                        if (mode)
+                        {
+                            currentEdge[edge.Target.ToString()] = 1;
+                        }
+                        else
+                        {
+                            currentEdge[edge.Target.ToString()] = 1 / edge.Weight;
+                            if (edge.IsSatelite)
+                                currentEdge[edge.Target.ToString()] /= 3;
+                            if (edge.isDuplex)
+                                currentEdge[edge.Target.ToString()] /= 1.5;
+                        }
+                }
+                vertices[currentVertex.ToString()] = currentEdge;
+
+            }
+
+        }
+
+        private Dictionary<string, Dictionary<string, double>> vertices = new Dictionary<string, Dictionary<string, double>>();
+
+        public void add_vertex(string name, Dictionary<string, double> edges)
+        {
+            vertices[name] = edges;
+        }
+
+        public List<string> shortest_path(string start, string finish)
+        {
+            var previous = new Dictionary<string, string>();
+            var distances = new Dictionary<string, double>();
+            var nodes = new List<string>();
+
+            List<string> path = null;
+
+            foreach (var vertex in vertices)
+            {
+                if (vertex.Key == start)
+                {
+                    distances[vertex.Key] = 0;
+                }
+                else
+                {
+                    distances[vertex.Key] = double.MaxValue;
+                }
+
+                nodes.Add(vertex.Key);
+            }
+
+            while (nodes.Count != 0)
+            {
+
+                nodes.Sort((x, y) => distances[x].CompareTo(distances[y]));
+
+                var smallest = nodes[0];
+                nodes.Remove(smallest);
+
+                if (smallest == finish)
+                {
+                    path = new List<string>();
+                    while (previous.ContainsKey(smallest))
+                    {
+                        path.Add(smallest);
+                        smallest = previous[smallest];
+                    }
+
+                    break;
+                }
+
+                if (distances[smallest] == double.MaxValue)
+                {
+                    break;
+                }
+
+                foreach (var neighbor in vertices[smallest])
+                {
+                    var alt = distances[smallest] + neighbor.Value;
+                    if (alt < distances[neighbor.Key])
+                    {
+                        distances[neighbor.Key] = alt;
+                        previous[neighbor.Key] = smallest;
+                    }
+                }
+            }
+
+            return path;
+        }
+
 
     }
 }

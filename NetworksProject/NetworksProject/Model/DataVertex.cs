@@ -14,6 +14,8 @@ namespace NetworksProject
         /// </summary>
         public string Text { get; set; }
 
+        public bool IsEnabled { get; set; }
+
         public List<DataEdge> Edges { get; set; } = new List<DataEdge>();
 
         public string Routing { get; set; } = "";
@@ -27,7 +29,6 @@ namespace NetworksProject
         {
             return Environment.NewLine + Routing;
         }
-
 
         public List<DataVertex> AdjVert
         {
@@ -49,21 +50,9 @@ namespace NetworksProject
             }
         }
 
-
-
-
         public DataVertex(string text)
         {
             Text = text;
         }
-
-        public static List<DataVertex> GetDefaultSetUp()
-        {
-            var predifined = new List<DataVertex>();
-
-
-            return predifined;
-        }
-
     }
 }
