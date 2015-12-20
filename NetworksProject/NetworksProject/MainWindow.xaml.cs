@@ -38,8 +38,11 @@ namespace NetworksProject
             zoomctrl.ZoomToFill();
 
             var modes = new List<string>() { "By hopes", "By speed" };
+            var protocols = new List<string>() { "TCP", "UDP" };
             routingModeBox.ItemsSource = modes;
             routingModeBox.SelectedItem = modes[0];
+            protocolBox.ItemsSource = protocols;
+            protocolBox.SelectedItem = protocols[0];
 
             //Lets setup GraphArea settings
             GraphAreaExample_Setup();
@@ -419,12 +422,12 @@ namespace NetworksProject
 
             if (_selectedEdge.IsEnabled)
             {
-                _selectedEdgeEvent.EdgeControl.DashStyle = EdgeDashStyle.Dash;
+                _selectedEdgeEvent.EdgeControl.Foreground = Brushes.Red;
                 _selectedEdge.IsEnabled = false;
             }
             else
             {
-                _selectedEdgeEvent.EdgeControl.DashStyle = EdgeDashStyle.Solid;
+                _selectedEdgeEvent.EdgeControl.Foreground = Brushes.Black;
                 _selectedEdge.IsEnabled = true;
             }
             Graph = (NetworkGraph)logicCore.Graph;

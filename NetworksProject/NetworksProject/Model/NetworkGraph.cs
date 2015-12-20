@@ -17,7 +17,7 @@ namespace NetworksProject
             //Now we need to create edges and vertices to fill data graph
             //This edges and vertices will represent graph structure and connections
             //Lets make some vertices
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 33; i++)
             {
                 //Create new vertex with specified Text. Also we will assign custom unique ID.
                 //This ID is needed for several features such as serialization and edge routing algorithms.
@@ -34,137 +34,230 @@ namespace NetworksProject
             //get the indexed list of graph vertices we have already added
             var vlist = dataGraph.Vertices.ToList();
             //Then create two edges optionaly defining Text property to show who are connected
-            var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = "1", Weight = 1, IsSatelite = false };
+            var dataEdge = new DataEdge(vlist[0], vlist[1]) { Text = "1", Weight = 1, IsSatelite = false, IsDuplex = false };
             vlist[0].Edges.Add(dataEdge);
             vlist[1].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
-            dataEdge = new DataEdge(vlist[0], vlist[2]) { Text = "2", Weight = 2, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[0], vlist[2]) { Text = "2", Weight = 2, IsSatelite = false, IsDuplex = false };
             vlist[0].Edges.Add(dataEdge);
             vlist[2].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[1], vlist[2]) { Text = "3", Weight = 3, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[1], vlist[2]) { Text = "3", Weight = 3, IsSatelite = false, IsDuplex = false };
             vlist[1].Edges.Add(dataEdge);
             vlist[2].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[2], vlist[3]) { Text = "5", Weight = 5, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[2], vlist[3]) { Text = "5", Weight = 5, IsSatelite = false, IsDuplex = false };
             vlist[2].Edges.Add(dataEdge);
             vlist[3].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[3], vlist[4]) { Text = "7", Weight = 7, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[3], vlist[4]) { Text = "7", Weight = 7, IsSatelite = false, IsDuplex = false };
             vlist[4].Edges.Add(dataEdge);
             vlist[3].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[0], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[0], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false, IsDuplex = false };
             vlist[0].Edges.Add(dataEdge);
             vlist[8].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[0], vlist[5]) { Text = "12", Weight = 12, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[0], vlist[5]) { Text = "12", Weight = 12, IsSatelite = false, IsDuplex = false };
             vlist[0].Edges.Add(dataEdge);
             vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[2], vlist[4]) { Text = "8", Weight = 8, IsSatelite = false, IsDuplex = false };
             vlist[2].Edges.Add(dataEdge);
             vlist[4].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[7], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[7], vlist[8]) { Text = "12", Weight = 12, IsSatelite = false, IsDuplex = false };
             vlist[7].Edges.Add(dataEdge);
             vlist[8].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[4], vlist[5]) { Text = "15", Weight = 15, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[4], vlist[5]) { Text = "15", Weight = 15, IsSatelite = false, IsDuplex = false };
             vlist[4].Edges.Add(dataEdge);
             vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[5], vlist[6]) { Text = "21", Weight = 21, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[5], vlist[6]) { Text = "21", Weight = 21, IsSatelite = false, IsDuplex = true };
             vlist[6].Edges.Add(dataEdge);
             vlist[5].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[6], vlist[7]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[6], vlist[7]) { Text = "26", Weight = 26, IsSatelite = false, IsDuplex = false };
             vlist[6].Edges.Add(dataEdge);
             vlist[7].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[8], vlist[9]) { Text = "26", Weight = 26, IsSatelite = true };
+            dataEdge = new DataEdge(vlist[8], vlist[9]) { Text = "26", Weight = 26, IsSatelite = true, IsDuplex = true };
             vlist[8].Edges.Add(dataEdge);
             vlist[9].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            //
-
-            dataEdge = new DataEdge(vlist[9], vlist[10]) { Text = "26", Weight = 26, IsSatelite = true };
+            dataEdge = new DataEdge(vlist[9], vlist[10]) { Text = "2", Weight = 2, IsSatelite = false, IsDuplex = false };
             vlist[9].Edges.Add(dataEdge);
             vlist[10].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[10], vlist[11]) { Text = "26", Weight = 26, IsSatelite = true };
+            dataEdge = new DataEdge(vlist[10], vlist[11]) { Text = "1", Weight = 1, IsSatelite = false, IsDuplex = false };
             vlist[10].Edges.Add(dataEdge);
             vlist[11].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[10], vlist[12]) { Text = "26", Weight = 26, IsSatelite = true };
+            dataEdge = new DataEdge(vlist[10], vlist[12]) { Text = "8", Weight = 8, IsSatelite = false, IsDuplex = false };
             vlist[10].Edges.Add(dataEdge);
             vlist[12].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[10], vlist[11]) { Text = "26", Weight = 26, IsSatelite = true };
-            vlist[10].Edges.Add(dataEdge);
-            vlist[11].Edges.Add(dataEdge);
-            dataGraph.AddEdge(dataEdge);
-
-            dataEdge = new DataEdge(vlist[10], vlist[13]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[10], vlist[13]) { Text = "26", Weight = 26, IsSatelite = false, IsDuplex = false };
             vlist[10].Edges.Add(dataEdge);
             vlist[13].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-
-            dataEdge = new DataEdge(vlist[11], vlist[12]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[11], vlist[12]) { Text = "21", Weight = 21, IsSatelite = false, IsDuplex = false };
             vlist[11].Edges.Add(dataEdge);
             vlist[12].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[12], vlist[13]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[12], vlist[13]) { Text = "15", Weight = 15, IsSatelite = false, IsDuplex = true };
             vlist[12].Edges.Add(dataEdge);
             vlist[13].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[13], vlist[14]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[13], vlist[14]) { Text = "12", Weight = 12, IsSatelite = false, IsDuplex = false };
             vlist[13].Edges.Add(dataEdge);
             vlist[14].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[13], vlist[19]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[13], vlist[19]) { Text = "8", Weight = 8, IsSatelite = true, IsDuplex = false };
             vlist[13].Edges.Add(dataEdge);
             vlist[19].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[14], vlist[15]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[14], vlist[15]) { Text = "3", Weight = 3, IsSatelite = false, IsDuplex = true };
             vlist[14].Edges.Add(dataEdge);
             vlist[15].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[15], vlist[16]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[15], vlist[16]) { Text = "7", Weight = 7, IsSatelite = false, IsDuplex = false };
             vlist[15].Edges.Add(dataEdge);
             vlist[16].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[15], vlist[17]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[15], vlist[17]) { Text = "2", Weight = 2, IsSatelite = false, IsDuplex = true };
             vlist[15].Edges.Add(dataEdge);
             vlist[17].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[15], vlist[18]) { Text = "26", Weight = 26, IsSatelite = false };
+            dataEdge = new DataEdge(vlist[16], vlist[17]) { Text = "5", Weight = 5, IsSatelite = false, IsDuplex = true };
+            vlist[16].Edges.Add(dataEdge);
+            vlist[17].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[17], vlist[18]) { Text = "1", Weight = 1, IsSatelite = false, IsDuplex = false };
+            vlist[17].Edges.Add(dataEdge);
+            vlist[18].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[15], vlist[18]) { Text = "3", Weight = 3, IsSatelite = false, IsDuplex = false };
             vlist[15].Edges.Add(dataEdge);
             vlist[18].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[19], vlist[20]) { Text = "5", Weight = 5, IsSatelite = false, IsDuplex = false };
+            vlist[19].Edges.Add(dataEdge);
+            vlist[20].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[19], vlist[21]) { Text = "2", Weight = 2, IsSatelite = false, IsDuplex = true };
+            vlist[19].Edges.Add(dataEdge);
+            vlist[21].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[19], vlist[22]) { Text = "1", Weight = 1, IsSatelite = false, IsDuplex = false };
+            vlist[19].Edges.Add(dataEdge);
+            vlist[22].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[20], vlist[22]) { Text = "7", Weight = 7, IsSatelite = false, IsDuplex = false };
+            vlist[20].Edges.Add(dataEdge);
+            vlist[22].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[21], vlist[22]) { Text = "12", Weight = 12, IsSatelite = false, IsDuplex = false };
+            vlist[21].Edges.Add(dataEdge);
+            vlist[22].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[22], vlist[23]) { Text = "8", Weight = 8, IsSatelite = false, IsDuplex = true };
+            vlist[22].Edges.Add(dataEdge);
+            vlist[23].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[23], vlist[24]) { Text = "15", Weight = 15, IsSatelite = false, IsDuplex = false };
+            vlist[23].Edges.Add(dataEdge);
+            vlist[24].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[23], vlist[25]) { Text = "21", Weight = 21, IsSatelite = false, IsDuplex = false };
+            vlist[23].Edges.Add(dataEdge);
+            vlist[25].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[24], vlist[25]) { Text = "26", Weight = 26, IsSatelite = false, IsDuplex = true };
+            vlist[24].Edges.Add(dataEdge);
+            vlist[25].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[9], vlist[26]) { Text = "21", Weight = 21, IsSatelite = false, IsDuplex = true };
+            vlist[9].Edges.Add(dataEdge);
+            vlist[26].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[26], vlist[27]) { Text = "15", Weight = 15, IsSatelite = false, IsDuplex = false };
+            vlist[26].Edges.Add(dataEdge);
+            vlist[27].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[26], vlist[28]) { Text = "12", Weight = 12, IsSatelite = false, IsDuplex = true };
+            vlist[26].Edges.Add(dataEdge);
+            vlist[28].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[27], vlist[28]) { Text = "8", Weight = 8, IsSatelite = false, IsDuplex = false };
+            vlist[27].Edges.Add(dataEdge);
+            vlist[28].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[28], vlist[29]) { Text = "7", Weight = 7, IsSatelite = false, IsDuplex = false };
+            vlist[28].Edges.Add(dataEdge);
+            vlist[29].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[28], vlist[30]) { Text = "5", Weight = 5, IsSatelite = false, IsDuplex = false };
+            vlist[28].Edges.Add(dataEdge);
+            vlist[30].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[28], vlist[31]) { Text = "2", Weight = 2, IsSatelite = false, IsDuplex = false };
+            vlist[28].Edges.Add(dataEdge);
+            vlist[31].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[30], vlist[32]) { Text = "3", Weight = 3, IsSatelite = false, IsDuplex = false };
+            vlist[30].Edges.Add(dataEdge);
+            vlist[32].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
+            dataEdge = new DataEdge(vlist[29], vlist[32]) { Text = "1", Weight = 1, IsSatelite = false, IsDuplex = true };
+            vlist[29].Edges.Add(dataEdge);
+            vlist[32].Edges.Add(dataEdge);
+            dataGraph.AddEdge(dataEdge);
+
             return dataGraph;
         }
 

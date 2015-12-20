@@ -124,7 +124,6 @@
     </Compile>
     <Compile Include="Model\DataEdge.cs" />
     <Compile Include="Model\DataVertex.cs" />
-    <Compile Include="Model\Network.cs" />
     <Compile Include="Model\NetworkGraph.cs" />
     <Compile Include="Model\NetworkGraphArea.cs" />
     <Compile Include="Model\NetworkGXLogicCore.cs" />

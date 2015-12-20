@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:NetworksProject"
         xmlns:controls="http://schemas.panthernet.ru/graphx/"
         xmlns:ExtWPF="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Network's graph" Height="600" Width="825">
+        Title="Network's graph" Height="600" Width="825" WindowState="Maximized">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -140,15 +140,16 @@
             </StackPanel>
          </DockPanel>
 
-         <ExtWPF:WatermarkTextBox Watermark="First node" Margin="3" Grid.Row="1" MaxWidth="105"/>
-         <Button Name="btnSearch" Content="Find path" MaxWidth="105" Grid.Row="2" Margin="3"/>
-         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="3" Margin="3" Click="btnCustom_Click"/>
+         <ExtWPF:WatermarkTextBox Watermark="Sender node" Margin="3" Grid.Row="1" MaxWidth="105"/>
+         <Button Name="btnSend" Content="Send" MaxWidth="105" Grid.Row="2" Margin="3"/>
+         <ComboBox Name="protocolBox" MaxWidth="105" Margin="3" Grid.Row="3"/>
+         
          <!--<Button Name="btnSettings" Content="Settings" MaxWidth="105" Grid.Row="4" Margin="3" />-->
             
          <ExtWPF:WatermarkTextBox Name="selectPackSize" MaxWidth="105" Watermark="Selelect packet" Margin="3" Grid.Row="4"/>
          <ComboBox Name="routingModeBox" MaxWidth="105" Margin="3" Grid.Row="5"/>
          <Button Name="btnApply" Content="Apply" MaxWidth="105" Grid.Row="6" Margin="3" Click="btnApply_Click"/>
-            
+         <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="7" Margin="3" Click="btnCustom_Click"/>
         </Grid>
     </Grid>
 </Window>
