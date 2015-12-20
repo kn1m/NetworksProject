@@ -7,18 +7,10 @@
         Title="Network's graph" Height="600" Width="825">
     <Grid>
         <Grid.ColumnDefinitions>
-            <!--<ColumnDefinition Width="Auto"/>-->
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <!--<Grid Grid.Column="0" Margin="4,4,4,4">
-            <ScrollViewer>
-                <TextBlock Name="rt" Text="Routing table:"/>
-            </ScrollViewer>
-        </Grid>-->
-        
-        
         <controls:ZoomControl Margin="4,4,4,4" Grid.Column="0" x:Name="zoomctrl" Grid.Row="1">
             <local:NetworkGraphArea x:Name="Area"/>
         </controls:ZoomControl>
@@ -33,13 +25,35 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Center">
                 <StackPanel>
+                    <TextBlock Margin="5" Text="Vertex settings" HorizontalAlignment="Center"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="btnChangeState" Margin="5" Content="Enable/Disable" Click="btnChangeState_Click"/>
                         <Button x:Name="btnAddEdge" Margin="5" Content="Add new edge" Click="btnAddEdge_Click"/>
+                        <Button x:Name="btnClose" Margin="5" Content="Cancel" Click="btnClose_Click" />
                     </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
+
+        <Grid x:Name="EdgeBox" Grid.Column="0" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            MinWidth="250"
+            Background="White" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Edge settings" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="btnChangeEdgeState" Margin="5" Content="Enable/Disable" Click="btnChangeEdgeState_Click"/>
+                        <Button x:Name="btnCloseBox" Margin="5" Content="Cancel" Click="btnCloseBox_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
 
         <Grid x:Name="VertexInputBox" Grid.Column="0" Visibility="Collapsed">
             <Grid Background="Black" Opacity="0.5"/>

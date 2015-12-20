@@ -177,37 +177,42 @@ namespace NetworksProject
             {
                 var currentEdge = new Dictionary<string, double>();
 
-                foreach (var edge in Edges)
+                if (currentVertex.IsEnabled)
                 {
-                    if (edge.Target == currentVertex)
-                        if (mode)
+                    foreach (var edge in Edges)
+                    {
+                        if (edge.IsEnabled)
                         {
-                            currentEdge[edge.Source.ToString()] = 1;
+                            if (edge.Target == currentVertex && edge.Source.IsEnabled)
+                                if (mode)
+                                {
+                                    currentEdge[edge.Source.ToString()] = 1;
+                                }
+                                else
+                                {
+                                    currentEdge[edge.Source.ToString()] = 1 / edge.Weight;
+                                    if (edge.IsSatelite)
+                                        currentEdge[edge.Source.ToString()] /= 3;
+                                    if (edge.IsDuplex)
+                                        currentEdge[edge.Source.ToString()] /= 1.5;
+                                }
+                            if (edge.Source == currentVertex && edge.Target.IsEnabled)
+                                if (mode)
+                                {
+                                    currentEdge[edge.Target.ToString()] = 1;
+                                }
+                                else
+                                {
+                                    currentEdge[edge.Target.ToString()] = 1 / edge.Weight;
+                                    if (edge.IsSatelite)
+                                        currentEdge[edge.Target.ToString()] /= 3;
+                                    if (edge.IsDuplex)
+                                        currentEdge[edge.Target.ToString()] /= 1.5;
+                                }
                         }
-                        else
-                        {
-                            currentEdge[edge.Source.ToString()] = 1 / edge.Weight;
-                            if(edge.IsSatelite)
-                                currentEdge[edge.Source.ToString()] /= 3;
-                            if(edge.isDuplex)
-                                currentEdge[edge.Source.ToString()] /= 1.5;
-                        }
-                    if (edge.Source == currentVertex)
-                        if (mode)
-                        {
-                            currentEdge[edge.Target.ToString()] = 1;
-                        }
-                        else
-                        {
-                            currentEdge[edge.Target.ToString()] = 1 / edge.Weight;
-                            if (edge.IsSatelite)
-                                currentEdge[edge.Target.ToString()] /= 3;
-                            if (edge.isDuplex)
-                                currentEdge[edge.Target.ToString()] /= 1.5;
-                        }
+                    }
+                    vertices[currentVertex.ToString()] = currentEdge;
                 }
-                vertices[currentVertex.ToString()] = currentEdge;
-
             }
 
         }

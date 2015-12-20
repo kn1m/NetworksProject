@@ -14,7 +14,7 @@ namespace NetworksProject
         /// </summary>
         public string Text { get; set; }
 
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
 
         public List<DataEdge> Edges { get; set; } = new List<DataEdge>();
 

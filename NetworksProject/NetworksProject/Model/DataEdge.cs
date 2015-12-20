@@ -23,7 +23,8 @@ namespace NetworksProject
 
         public int RegionId { get; set; }
         public bool IsSatelite { get; set; }
-        public bool isDuplex { get; set; }
+        public bool IsDuplex { get; set; }
+        public bool IsEnabled { get; set; } = true;
 
         public string GetEdgeType()
         {
@@ -33,7 +34,7 @@ namespace NetworksProject
                 res += "Type: Satellite";
             else
                 res += "Type: Reginonal";
-            if (isDuplex)
+            if (IsDuplex)
                 res += "\r\n         Duplex";
             else
                 res += "\r\n         Half-duplex";

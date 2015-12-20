@@ -18,11 +18,13 @@ namespace NetworksProject
     public partial class MainWindow : Window, IDisposable
     {
 
-        private DataVertex _selected;
+        private DataVertex _selectedVertex;
+        private DataEdge _selectedEdge;
         private NetworkGXLogicCore logicCore;
         private NetworkGraph dataGraph;
 
-        private VertexSelectedEventArgs tmp;
+        private VertexSelectedEventArgs _selectedVertexEvent;
+        private EdgeSelectedEventArgs _selectedEdgeEvent;
 
         private NetworkGraph Graph;
 
@@ -46,13 +48,19 @@ namespace NetworksProject
 
             //Vertex settings
             Area.VertexSelected += ((h, j) => {
-                tmp = j;
-                _selected = (DataVertex)j.VertexControl.Vertex;
+                _selectedVertexEvent = j;
+                _selectedVertex = (DataVertex)j.VertexControl.Vertex;
                 VertexBox.Visibility = Visibility.Visible; });
+
+            Area.EdgeSelected += ((h, j) => {
+                _selectedEdgeEvent = j;
+                _selectedEdge = (DataEdge)j.EdgeControl .Edge;
+                EdgeBox.Visibility = Visibility.Visible;
+            });
 
             Area.EdgeMouseEnter += ((h,j) =>
             {
-
+                
                 foreach (var item in logicCore.Graph.Edges)
                 {
                     if (item.Text == j.EdgeControl.Edge.ToString())
@@ -70,7 +78,10 @@ namespace NetworksProject
                 {
                     if(item.Text == j.VertexControl.Vertex.ToString())
                     {
-                        j.VertexControl.ToolTip = item.Text + "\n\n"+ item.Routing;
+                        if (item.IsEnabled)
+                            j.VertexControl.ToolTip = item.Text + "\n\n" + item.Routing;
+                        else
+                            j.VertexControl.ToolTip = item.Text;
                     }
                 }
             });
@@ -89,16 +100,18 @@ namespace NetworksProject
 
         private void btnChangeState_Click(object sender, RoutedEventArgs e)
         {
-            if (_selected.IsEnabled)
+            if (_selectedVertex.IsEnabled)
             {
-                tmp.VertexControl.Foreground = Brushes.Red;
-                _selected.IsEnabled = false;
+                _selectedVertexEvent.VertexControl.Foreground = Brushes.Red;
+                _selectedVertex.IsEnabled = false;
             }
             else
             {
-                tmp.VertexControl.Foreground = Brushes.Black;
-                _selected.IsEnabled = true;
+                _selectedVertexEvent.VertexControl.Foreground = Brushes.Black;
+                _selectedVertex.IsEnabled = true;
             }
+            Graph = (NetworkGraph)logicCore.Graph;
+            btnApply_Click(null, null);
             VertexBox.Visibility = Visibility.Collapsed;
         }
 
@@ -178,7 +191,7 @@ namespace NetworksProject
             {
                 if (item.IsSatelite)
                     Area.EdgesList[item].Foreground = Brushes.Green;
-                if (item.isDuplex)
+                if (item.IsDuplex)
                     Area.EdgesList[item].DashStyle = EdgeDashStyle.Dash;
             }
 
@@ -290,16 +303,16 @@ namespace NetworksProject
                         {
                             if (isDuplexCheck.IsChecked.Value)
                             {
-                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true, isDuplex = true };
-                                _selected.Edges.Add(newEdge);
+                                var newEdge = new DataEdge(_selectedVertex, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true, IsDuplex = true };
+                                _selectedVertex.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
                                 Graph = (NetworkGraph)logicCore.Graph;
                             }
                             else
                             {
-                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true, isDuplex = false };
-                                _selected.Edges.Add(newEdge);
+                                var newEdge = new DataEdge(_selectedVertex, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = true, IsDuplex = false };
+                                _selectedVertex.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
                                 Graph = (NetworkGraph)logicCore.Graph;
@@ -309,16 +322,16 @@ namespace NetworksProject
                         {
                             if (isDuplexCheck.IsChecked.Value)
                             {
-                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false,isDuplex = true };
-                                _selected.Edges.Add(newEdge);
+                                var newEdge = new DataEdge(_selectedVertex, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false,IsDuplex = true };
+                                _selectedVertex.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
                                 Graph = (NetworkGraph)logicCore.Graph;
                             }
                             else
                             {
-                                var newEdge = new DataEdge(_selected, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false, isDuplex = false };
-                                _selected.Edges.Add(newEdge);
+                                var newEdge = new DataEdge(_selectedVertex, ver.First()) { Text = EdgeTextBox.Text, Weight = weight, IsSatelite = false, IsDuplex = false };
+                                _selectedVertex.Edges.Add(newEdge);
                                 ver.First().Edges.Add(newEdge);
                                 logicCore.Graph.AddEdge(newEdge);
 
@@ -326,7 +339,7 @@ namespace NetworksProject
                             }
                         }
 
-                        SearchShortestWay(true);
+                        btnApply_Click(null, null);
                         gg_but_randomgraph_Click(null, null);
                     }
                 }
@@ -385,10 +398,38 @@ namespace NetworksProject
 
         private void btnApply_Click(object sender, RoutedEventArgs e)
         {
-            if (routingModeBox.SelectedItem.ToString() == "By modes")
+            if (routingModeBox.SelectedItem.ToString() == "By hopes")
                 SearchShortestWay(true);
             else
                 SearchShortestWay(false);
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            VertexBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnCloseBox_Click(object sender, RoutedEventArgs e)
+        {
+            EdgeBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnChangeEdgeState_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (_selectedEdge.IsEnabled)
+            {
+                _selectedEdgeEvent.EdgeControl.DashStyle = EdgeDashStyle.Dash;
+                _selectedEdge.IsEnabled = false;
+            }
+            else
+            {
+                _selectedEdgeEvent.EdgeControl.DashStyle = EdgeDashStyle.Solid;
+                _selectedEdge.IsEnabled = true;
+            }
+            Graph = (NetworkGraph)logicCore.Graph;
+            btnApply_Click(null, null);
+            EdgeBox.Visibility = Visibility.Collapsed;
         }
     }
 }
