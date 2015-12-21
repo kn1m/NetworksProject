@@ -208,10 +208,10 @@ namespace NetworksProject
             vlist[25].Edges.Add(dataEdge);
             dataGraph.AddEdge(dataEdge);
 
-            dataEdge = new DataEdge(vlist[24], vlist[25]) { Text = "26", Weight = 26, IsSatelite = false, IsDuplex = true };
-            vlist[24].Edges.Add(dataEdge);
-            vlist[25].Edges.Add(dataEdge);
-            dataGraph.AddEdge(dataEdge);
+            //dataEdge = new DataEdge(vlist[24], vlist[25]) { Text = "26", Weight = 26, IsSatelite = false, IsDuplex = true };
+            //vlist[24].Edges.Add(dataEdge);
+            //vlist[25].Edges.Add(dataEdge);
+            //dataGraph.AddEdge(dataEdge);
 
             dataEdge = new DataEdge(vlist[9], vlist[26]) { Text = "21", Weight = 21, IsSatelite = false, IsDuplex = true };
             vlist[9].Edges.Add(dataEdge);

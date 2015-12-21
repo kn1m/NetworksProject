@@ -20,6 +20,15 @@ namespace NetworksProject
 
         public string Routing { get; set; } = "";
 
+        public int RecievedTCPControlPackets { get; set; } = 0;
+        public int RecievedTCPDataPackets { get; set; } = 0;
+
+        public int SendedTCPControlPackets { get; set; } = 0;
+        public int SendedTCPDataPackets { get; set; } = 0;
+
+        public int SendedUDPPackets { get; set; } = 0;
+        public int RecivedUDPPackets { get; set; } = 0;
+
         public override string ToString()
         {
             return Text;

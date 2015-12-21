@@ -21,6 +21,9 @@ namespace NetworksProject
 
         public string Text { get; set; }
 
+        public int Buffer { get; set; }
+        public int BufferSize { get; set; }
+
         public int RegionId { get; set; }
         public bool IsSatelite { get; set; }
         public bool IsDuplex { get; set; }

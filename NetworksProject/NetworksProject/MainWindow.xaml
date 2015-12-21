@@ -127,6 +127,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
         <DockPanel LastChildFill="False" Grid.Column="1" Margin="3" Grid.Row="0">
@@ -139,17 +142,21 @@
                 </Button>
             </StackPanel>
          </DockPanel>
-
-         <ExtWPF:WatermarkTextBox Watermark="Sender node" Margin="3" Grid.Row="1" MaxWidth="105"/>
-         <Button Name="btnSend" Content="Send" MaxWidth="105" Grid.Row="2" Margin="3"/>
+          
+         <!-- Send block -->
+         <ExtWPF:WatermarkTextBox Name="SenderBox" Watermark="Sender node" Margin="3" Grid.Row="1" MaxWidth="105"/>
+         <ExtWPF:WatermarkTextBox Name="selectPackSize" MaxWidth="105" Watermark="Selelect packet" Margin="3" Grid.Row="2"/>
          <ComboBox Name="protocolBox" MaxWidth="105" Margin="3" Grid.Row="3"/>
+         <Button Name="btnSend" Content="Send" MaxWidth="105" Grid.Row="4" Margin="3" Click="btnSend_Click"/>
          
-         <!--<Button Name="btnSettings" Content="Settings" MaxWidth="105" Grid.Row="4" Margin="3" />-->
-            
-         <ExtWPF:WatermarkTextBox Name="selectPackSize" MaxWidth="105" Watermark="Selelect packet" Margin="3" Grid.Row="4"/>
          <ComboBox Name="routingModeBox" MaxWidth="105" Margin="3" Grid.Row="5"/>
          <Button Name="btnApply" Content="Apply" MaxWidth="105" Grid.Row="6" Margin="3" Click="btnApply_Click"/>
          <Button Name="btnCustom" Content="Set custom" MaxWidth="105" Grid.Row="7" Margin="3" Click="btnCustom_Click"/>
+         <Button Name="btnIter" Content="Next iteration" MaxWidth="105" Grid.Row="8" Margin="3" Click="btnIter_Click"/>
+         <Button Name="btnAutoIter" Content="Auto ineration" MaxWidth="105" Grid.Row="9" Margin="3" Click="btnAutoIter_Click"/>
+         <TextBlock Name="CurrentIterBox" Grid.Row="10" Margin="3" MaxWidth="150"/>
+         <TextBlock Name="StatsText" Grid.Row="11" Margin="3" MaxWidth="150"/>
+         <!-- Send block end -->
         </Grid>
     </Grid>
 </Window>

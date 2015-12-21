@@ -23,11 +23,28 @@ namespace NetworksProject
         private NetworkGXLogicCore logicCore;
         private NetworkGraph dataGraph;
 
+        private int _iterationNumber = 0;
+        private List<DataVertex> _currentIterVertices = new List<DataVertex>();
+        private List<DataVertex> _currentVerticesToExclude = new List<DataVertex>();
+        private List<DataVertex> _verticesToExclude = new List<DataVertex>();
+        private List<DataEdge> _currentBrushedEdges = new List<DataEdge>();
+
         private VertexSelectedEventArgs _selectedVertexEvent;
         private EdgeSelectedEventArgs _selectedEdgeEvent;
 
         private NetworkGraph Graph;
-
+        private bool FinBeg = false;
+        private bool FinEnd = false;
+        private bool Recolored = false;
+        private bool End = false;
+        private bool Switch = false;
+        private bool DataBeg = false;
+        private bool Est1 = false;
+        private bool Est2 = false;
+        private bool Est3 = false;
+        private bool Est4 = false;
+        private bool UDPSW = false;
+        private List<string> protocols;
         public MainWindow()
         {
             InitializeComponent();
@@ -38,7 +55,7 @@ namespace NetworksProject
             zoomctrl.ZoomToFill();
 
             var modes = new List<string>() { "By hopes", "By speed" };
-            var protocols = new List<string>() { "TCP", "UDP" };
+            protocols = new List<string>() { "TCP", "UDP" };
             routingModeBox.ItemsSource = modes;
             routingModeBox.SelectedItem = modes[0];
             protocolBox.ItemsSource = protocols;
@@ -66,7 +83,7 @@ namespace NetworksProject
                 
                 foreach (var item in logicCore.Graph.Edges)
                 {
-                    if (item.Text == j.EdgeControl.Edge.ToString())
+                    if (item.Equals(j.EdgeControl.Edge))
                     {
                         j.EdgeControl.ToolTip = item.GetEdgeType();
                     }
@@ -82,11 +99,26 @@ namespace NetworksProject
                     if(item.Text == j.VertexControl.Vertex.ToString())
                     {
                         if (item.IsEnabled)
+                        {
                             j.VertexControl.ToolTip = item.Text + "\n\n" + item.Routing;
+                            StatsText.Text = "";
+                            StatsText.Text += "  " + item.Text + Environment.NewLine;
+                            StatsText.Text += "  Recieved TCP" + Environment.NewLine + "  control packets: " + item.RecievedTCPControlPackets + Environment.NewLine;
+                            StatsText.Text += "  Recieved TCP" + Environment.NewLine + "  data packets: " + item.RecievedTCPDataPackets + Environment.NewLine;
+                            StatsText.Text += "  Sended TCP" + Environment.NewLine + "  control packets: " + item.SendedTCPControlPackets + Environment.NewLine;
+                            StatsText.Text += "  Sended TCP" + Environment.NewLine + "  data packets: " + item.SendedTCPDataPackets + Environment.NewLine;
+                            StatsText.Text += "  Recieved UDP" + Environment.NewLine + "  data packets: " + item.RecivedUDPPackets + Environment.NewLine;
+                            StatsText.Text += "  Sended UDP" + Environment.NewLine + "  data packets: " + item.SendedUDPPackets + Environment.NewLine;
+                            CurrentIterBox.Text = "  Current iteration: " + Environment.NewLine + "  " + _iterationNumber;
+                        }
                         else
                             j.VertexControl.ToolTip = item.Text;
                     }
                 }
+            });
+
+            Area.VertexMouseLeave += ((h,j) => { StatsText.Text = "";
+                CurrentIterBox.Text = "";
             });
 
             gg_but_randomgraph.Click += gg_but_randomgraph_Click;
@@ -433,6 +465,309 @@ namespace NetworksProject
             Graph = (NetworkGraph)logicCore.Graph;
             btnApply_Click(null, null);
             EdgeBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnSend_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(SenderBox.Text))
+            {
+                foreach (var vertex in Area.LogicCore.Graph.Vertices)
+                {
+                    if(vertex.Text == SenderBox.Text)
+                    {
+                        _currentVerticesToExclude.Add(vertex);
+                        foreach (var item in vertex.AdjVert)
+                        {
+                            if (protocolBox.SelectedItem.ToString() == protocols[0])
+                                vertex.SendedTCPControlPackets += 1;
+                            if(protocolBox.SelectedItem.ToString() == protocols[1])
+                                vertex.SendedUDPPackets += 1;
+                            _currentIterVertices.Add(item);
+                            foreach (var edge in Area.EdgesList.Keys)
+                            {
+                                if ((edge.Source == vertex && edge.Target == item) || (edge.Target == vertex && edge.Source == item))
+                                {
+                                    _currentBrushedEdges.Add(edge);
+                                    Area.EdgesList[edge].Foreground = Brushes.Blue;
+                                }
+                            }
+                        }
+                        _iterationNumber += 1;
+                    }
+
+                }
+            }
+        }
+
+        private void Recolor()
+        {
+            foreach (var item in _currentBrushedEdges)
+            {
+                Area.EdgesList[item].Foreground = Brushes.Black;
+                if (item.IsSatelite)
+                    Area.EdgesList[item].Foreground = Brushes.Green;
+            }
+            Recolored = true;
+            //MessageBox.Show(_iterationNumber.ToString());
+            _currentBrushedEdges = new List<DataEdge>();
+        }
+
+        private void MoveNext()
+        {
+
+        }
+
+        private void btnIter_Click(object sender, RoutedEventArgs e)
+        {
+            if (_verticesToExclude.Count + _currentVerticesToExclude.Count == Graph.Vertices.ToList().Count)
+            {
+
+                int s = 0;
+                foreach (var item in Area.VertexList.Keys)
+                {
+                    s += item.SendedTCPControlPackets;
+                    s += item.RecievedTCPControlPackets;
+                    //_iterationNumber += 3 * 2 * 32;
+                }
+                MessageBox.Show(" " + s.ToString() + " " + _iterationNumber.ToString());
+                MessageBox.Show("Finish");
+                return;
+            }
+
+
+            if (Recolored)
+            {
+                foreach (var item in _currentVerticesToExclude)
+                {
+                    _verticesToExclude.Add(item);
+                }
+                
+                _currentVerticesToExclude = new List<DataVertex>();
+
+                foreach (var vertex in _currentIterVertices)
+                {
+                    _currentVerticesToExclude.Add(vertex);
+                }
+
+                _currentIterVertices = new List<DataVertex>();
+
+                foreach (var item in _currentVerticesToExclude)
+                {
+
+                    foreach (var adj in item.AdjVert)
+                    {
+                        foreach (var cv in _verticesToExclude)
+                        {
+                            if(adj.Text != cv.Text)
+                                _currentIterVertices.Add(adj);
+                        }
+                    }
+                }
+
+                _currentIterVertices = _currentIterVertices.Except(_currentVerticesToExclude).Union(_currentVerticesToExclude.Except(_currentIterVertices)).ToList();
+
+                foreach (var item in _verticesToExclude)
+                {
+                    _currentIterVertices.Remove(item);
+                }
+
+                foreach (var item in _currentVerticesToExclude)
+                {
+                    _currentIterVertices.Remove(item);
+                }
+
+                foreach (var vertex in _currentVerticesToExclude)
+                {
+                    foreach (var item in vertex.AdjVert)
+                    {
+                        foreach (var edge in Area.EdgesList.Keys)
+                        {
+                            if (edge.Source == vertex && edge.Target == item && (!_verticesToExclude.Contains(vertex) && !_verticesToExclude.Contains(item)))
+                            {
+                                _currentBrushedEdges.Add(edge);
+                                Area.EdgesList[edge].Foreground = Brushes.Blue;
+                            }
+                            if(edge.Target == vertex && edge.Source == item && (!_verticesToExclude.Contains(vertex) && !_verticesToExclude.Contains(item)))
+                            {
+                                _currentBrushedEdges.Add(edge);
+                                Area.EdgesList[edge].Foreground = Brushes.Blue;
+                            }
+                        }
+                    }
+                }
+                Recolored = false;
+                Switch = false;
+                End = false;
+                FinBeg = false;
+                FinEnd = false;
+                DataBeg = false;
+                Est3 = false;
+                Est1 = false;
+                Est2 = false;
+                Est4 = false;
+            }
+
+
+            else
+                foreach (var item in _currentIterVertices)
+                {
+                    if (protocolBox.SelectedItem.ToString() == protocols[0])
+                    {
+
+                        //???
+                        //for (int i = 0; i < item.AdjVert.Count; i++)
+                        //{
+                        //    if (_currentIterVertices.Contains(item.AdjVert[i]))
+                        //    {
+                        //        item.RecievedTCPControlPackets += 6;
+                        //        item.SendedTCPControlPackets += 6;
+                        //        item.RecievedTCPDataPackets += 1;
+                        //        item.SendedTCPDataPackets += 1;
+
+                        //        item.AdjVert[i].RecievedTCPControlPackets += 6;
+                        //        item.AdjVert[i].SendedTCPControlPackets += 6;
+                        //        item.AdjVert[i].RecievedTCPDataPackets += 1;
+                        //        item.AdjVert[i].SendedTCPDataPackets += 1;
+                        //    }
+                        //}
+
+
+                        //Connection establishement
+                        if ((item.RecievedTCPControlPackets == 1) || !Est3)
+                        {
+                            foreach (var cv in _currentVerticesToExclude)
+                            {
+                                cv.RecievedTCPControlPackets += 1;
+                                cv.SendedTCPControlPackets += 1;
+                            }
+                            if (item == _currentIterVertices.Last())
+                            {
+                                Est3 = true;
+                            }
+                        }
+
+                        if ((item.SendedTCPControlPackets == 1 && item.RecievedTCPControlPackets != 2) || !Est1)
+                        {
+                            item.RecievedTCPControlPackets += 1;
+                            if (item == _currentIterVertices.Last())
+                            {
+                                Est1 = true;
+                            }
+                        }
+
+
+                        if ((item.RecievedTCPControlPackets == 0) || !Est2)
+                        {
+                            item.RecievedTCPControlPackets += 1;
+                            item.SendedTCPControlPackets += 1;
+                            if (item == _currentIterVertices.Last())
+                            {
+                                Est2 = true;
+                            }
+                        }
+
+
+                        if (End)
+                        {
+                            item.RecievedTCPControlPackets += 1;
+                            if (item == _currentIterVertices.Last())
+                            {
+                                End = false;
+                                Recolor();
+                            }
+
+                        }
+
+                        if (Switch)
+                        {
+                            foreach (var cv in _currentVerticesToExclude)
+                            {
+                                cv.RecievedTCPControlPackets += 2;
+                                cv.SendedTCPControlPackets += 1;
+                            }
+                            if (item == _currentIterVertices.Last())
+                            {
+                                Switch = false;
+                                End = true;
+                            }
+                        }
+
+
+                        //Sending data
+                        if (FinEnd)
+                        {
+                            item.RecievedTCPControlPackets += 1;
+                            item.SendedTCPControlPackets += 2;
+                            if (item == _currentIterVertices.Last())
+                                Switch = true;
+                        }
+
+
+                        if (FinBeg)
+                        {
+                            foreach (var cv in _currentVerticesToExclude)
+                            {
+                                cv.SendedTCPControlPackets += 1;
+                            }
+                            if (item == _currentIterVertices.Last())
+                            {
+                                FinBeg = false;
+                                FinEnd = true;
+                            }
+                        }
+
+
+                        if (DataBeg)
+                        {
+                            item.RecievedTCPDataPackets += 1;
+                            if (item == _currentIterVertices.Last())
+                            {
+                                FinBeg = true;
+                                DataBeg = false;
+                            }
+                        }
+
+
+                        if ((item.RecievedTCPControlPackets == 2) || !Est4)
+                        {
+
+                            if (item == _currentIterVertices.Last())
+                            {
+                                foreach (var cv in _currentVerticesToExclude)
+                                {
+                                    cv.SendedTCPDataPackets += 1;
+                                }
+                                DataBeg = true;
+                                Est4 = true;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (protocolBox.SelectedItem.ToString() == "UDP")
+                        {
+                            item.RecivedUDPPackets += 1;
+                            for (int i = 0; i < item.AdjVert.Count; i++)
+                            {
+                                if (_currentIterVertices.Contains(item.AdjVert[i]))
+                                    item.AdjVert[i].RecivedUDPPackets += 1;
+                                item.SendedUDPPackets += 1;
+                            }
+                            if (item == _currentIterVertices.Last())
+                            {
+                                Recolor();
+                            }
+                        }
+                    }
+                }
+                
+            _iterationNumber++;
+        }
+
+        private void btnAutoIter_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
